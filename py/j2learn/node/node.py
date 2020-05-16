@@ -22,8 +22,7 @@ class Node(NodeBase):
 
     def derivative(self):
         """
-        the jacobian wrt current weights
-        :return:
+        :return: the Jacobian wrt current weights
         """
         ...
 
