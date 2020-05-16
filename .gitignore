@@ -1,2 +1,4 @@
 /py/j2learn.egg-info/
 *~
+*__pycache__*
+.idea
