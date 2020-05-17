@@ -6,11 +6,7 @@ class LayerBase(ABC):
         ...
 
     @abstractmethod
-    def value(self, x, y):
-        ...
-
-    @abstractmethod
-    def node(self, i):
+    def node(self, i, j=None):
         ...
 
 

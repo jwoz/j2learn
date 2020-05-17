@@ -14,10 +14,12 @@ class ActivationFunction(ABC):
 
 
 class reLU(ActivationFunction):
-    def value(self, z):
+    @staticmethod
+    def value(z):
         return max(0, z)
 
-    def derivative(self, z):
+    @staticmethod
+    def derivative(z):
         if z < 0: return 0
         if z > 0: return 1
         return np.nan()
