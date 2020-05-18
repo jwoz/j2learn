@@ -5,7 +5,7 @@ from j2learn.node.node import Node
 
 
 class CNN:
-    def __init__(self, activation, kernel, stride, underlying_layer, build=True):
+    def __init__(self, activation, kernel, stride, underlying_layer, build=True, weight=None):
         self._activation = activation
         self._underlying_layer = underlying_layer
         self._kernel = kernel
@@ -13,9 +13,9 @@ class CNN:
         self._shape = None
         self._nodes = []
         if build:
-            self.build()
+            self.build(init=weight)
 
-    def build(self):
+    def build(self, init=None):
         shape = self._underlying_layer.shape()
         self._nodes = []
         for nx in range(shape[0]):
@@ -32,8 +32,9 @@ class CNN:
                             node = ZeroNode()
                             weight = 0
                         else:
+                            # print(f'{nx} {ny}: {kk} {ll}')
                             node = self._underlying_layer.node(kk, ll)
-                            weight = random.random()
+                            weight = random.random() if init is None else init
                         nodes.append(node)
                         weights.append(weight)
                 this_cnn_node = Node(self._activation, weights, nodes)
@@ -43,8 +44,8 @@ class CNN:
     def node(self, i, j=None):
         if j is None:
             return self._nodes[i]
-        assert i + self._shape[0] * j < len(self._nodes), f'{i}, {j}, {self._shape}: {i + self._shape[0] * j} < {len(self._nodes)}'
-        return self._nodes[i + self._shape[0] * j]
+        assert i * self._shape[1] + j < len(self._nodes), f'{i}, {j}, {self._shape}: {i * self._shape[1] + j} < {len(self._nodes)}'
+        return self._nodes[i * self._shape[1] + j]
 
     def shape(self):
         return self._shape
@@ -52,3 +53,14 @@ class CNN:
     def jacobian(self):
         partial_derivatives = [node.derivative() for node in self._nodes]
         return partial_derivatives
+
+    def display(self, threshold=200):
+        render = ''
+        for i in range(len(self._nodes)):
+            if i % self._shape[0] == 0:
+                render += '\n'
+            if self._nodes[i].value() > threshold:
+                render += '@'
+            else:
+                render += '.'
+        return render

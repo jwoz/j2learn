@@ -28,8 +28,8 @@ class Dense:
     def node(self, i, j=None):
         if j is None:
             return self._nodes[i]
-        assert i + self._shape[0] * j < len(self._nodes), f'{i}, {j}, {self._shape}: {i + self._shape[0] * j} < {len(self._nodes)}'
-        return self._nodes[i + self._shape[0] * j]
+        assert i * self._shape[1] + j < len(self._nodes), f'{i}, {j}, {self._shape}: {i * self._shape[1] * j} < {len(self._nodes)}'
+        return self._nodes[i * self._shape[1] * j]
 
     def shape(self):
         return self._shape
