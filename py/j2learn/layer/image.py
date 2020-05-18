@@ -32,12 +32,14 @@ class Image:
     def shape(self):
         return self._shape
 
-    def display(self, threshold=0.8):
+    def display(self, numbers=False, threshold=0.8):
         render = ''
         for i in range(len(self._image_data)):
             if i % self._shape[0] == 0:
                 render += '\n'
-            if self._image_data[i] > threshold:
+            if numbers:
+              render += f'{self._image_data[i]:4.2f} ' if self._image_data[i] > 0.01 else '.... '
+            elif self._image_data[i] > threshold:
                 render += '@'
             else:
                 render += '.'

@@ -55,12 +55,14 @@ class CNN:
         partial_derivatives = [node.derivative() for node in self._nodes]
         return partial_derivatives
 
-    def display(self, threshold=0.8):
+    def display(self, numbers=False, threshold=0.8):
         render = ''
         for i in range(len(self._nodes)):
             if i % self._shape[0] == 0:
                 render += '\n'
-            if self._nodes[i].value() > threshold:
+            if numbers:
+              render += f'{self._nodes[i].value():4.2f} ' if self._nodes[i].value() > 0.01 else '.... '
+            elif self._nodes[i].value() > threshold:
                 render += '@'
             else:
                 render += '.'
