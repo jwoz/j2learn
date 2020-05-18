@@ -1,6 +1,6 @@
 import math
 
-from j2learn.node.node import DataNode
+from j2learn.node.data import DataNode
 
 
 class Image:

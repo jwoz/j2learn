@@ -1,6 +1,6 @@
 import numpy as np
 
-class MaximumNode(NodeBase):
+class MaximumNode:
     def __init__(self, categories, underlying_nodes):
         self._categories = categories
         self._underlying_nodes = underlying_nodes
