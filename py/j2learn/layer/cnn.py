@@ -37,6 +37,7 @@ class CNN:
                             weight = random.random() if init is None else init
                         nodes.append(node)
                         weights.append(weight)
+                weights = [w/sum(weights) for w in weights]
                 this_cnn_node = Node(self._activation, weights, nodes)
                 self._nodes.append(this_cnn_node)
         self._shape = shape
@@ -54,7 +55,7 @@ class CNN:
         partial_derivatives = [node.derivative() for node in self._nodes]
         return partial_derivatives
 
-    def display(self, threshold=200):
+    def display(self, threshold=0.8):
         render = ''
         for i in range(len(self._nodes)):
             if i % self._shape[0] == 0:

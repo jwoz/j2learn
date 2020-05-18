@@ -4,7 +4,7 @@ from j2learn.node.data import DataNode
 
 
 class Image:
-    def __init__(self, image_data=None, shape=None, label=None):
+    def __init__(self, image_data=None, shape=None, label=None, maximum=256):
         assert image_data is not None or shape is not None
         self._label = label
 
@@ -12,10 +12,11 @@ class Image:
             shape = (int(math.sqrt(len(image_data))),) * 2
         assert image_data is None or shape[0] * shape[1] == len(image_data)
         self._shape = shape
-        self._image_data = [0] * shape[1] * shape[0] if image_data is None else image_data
+        self._maximum = maximum
+        self._image_data = [0] * shape[1] * shape[0] if image_data is None else [i/maximum for i in image_data]
 
     def set_image_data_and_label(self, image_data, label=None):
-        self._image_data = image_data
+        self._image_data = [i/self._maximum for i in image_data]
         self._label = label
 
     def label(self):
@@ -31,7 +32,7 @@ class Image:
     def shape(self):
         return self._shape
 
-    def display(self, threshold=200):
+    def display(self, threshold=0.8):
         render = ''
         for i in range(len(self._image_data)):
             if i % self._shape[0] == 0:

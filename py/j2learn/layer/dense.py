@@ -23,6 +23,7 @@ class Dense:
                 weight = random.random()
                 nodes.append(node)
                 weights.append(weight)
+            weights = [w / sum(weights) for w in weights]
             self._nodes.append(Node(self._activation, weights, nodes))
 
     def node(self, i, j=None):
