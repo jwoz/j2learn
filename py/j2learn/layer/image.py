@@ -1,6 +1,5 @@
 import math
 
-from j2learn.layer.layer import LayerBase
 from j2learn.node.node import DataNode
 
 
@@ -42,3 +41,6 @@ class Image:
             else:
                 render += '.'
         return render
+
+    def jacobian(self):
+        return [[]]

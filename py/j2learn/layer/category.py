@@ -1,8 +1,7 @@
-from j2learn.node.node import MaximumNode
+from j2learn.node.maximum import MaximumNode
 import random
-from j2learn.layer.layer import LayerBase
 
-class Category(LayerBase):
+class Category:
     def __init__(self, categories, underlying_layer, build=True):
         self._categories = categories
         self._underlying_layer = underlying_layer
@@ -22,3 +21,8 @@ class Category(LayerBase):
 
     def shape(self):
         return self._shape
+
+    def jacobian(self):
+        partial_derivatives = [self._node.derivative()]
+        return partial_derivatives
+

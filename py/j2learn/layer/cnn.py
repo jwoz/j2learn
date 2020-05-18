@@ -1,8 +1,8 @@
-from j2learn.node.node import Node, ZeroNode
+from j2learn.node.node import Node
+from j2learn.node.data import ZeroNode
 import random
-from j2learn.layer.layer import LayerBase
 
-class CNN(LayerBase):
+class CNN:
     def __init__(self, activation, kernel, stride, underlying_layer, build=True):
         self._activation = activation
         self._underlying_layer = underlying_layer
@@ -45,3 +45,7 @@ class CNN(LayerBase):
 
     def shape(self):
         return self._shape
+
+    def jacobian(self):
+        partial_derivatives = [node.derivative() for node in self._nodes]
+        return partial_derivatives
