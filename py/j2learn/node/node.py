@@ -44,6 +44,8 @@ class MaximumNode(NodeBase):
             return -1
         return self._categories[i]
 
+    def derivative(self):
+        return 0
 
 @dataclass
 class ValueNode:
