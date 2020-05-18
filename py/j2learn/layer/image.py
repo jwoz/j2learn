@@ -12,7 +12,7 @@ class Image:
             shape = (int(math.sqrt(len(image_data))),) * 2
         assert image_data is None or shape[0] * shape[1] == len(image_data)
         self._shape = shape
-        self._image_data = [0]*shape[1]*shape[0] if image_data is None else image_data
+        self._image_data = [0] * shape[1] * shape[0] if image_data is None else image_data
 
     def set_image_data_and_label(self, image_data, label=None):
         self._image_data = image_data
@@ -25,8 +25,8 @@ class Image:
         if j is None:
             assert i < len(self._image_data)
             return DataNode(self._image_data[i])
-        assert i+self._shape[0]*j < len(self._image_data), f'{i}, {j}: {i+self._shape[0]*j}>{len(self._image_data)}'
-        return DataNode(self._image_data[i+self._shape[0]*j])
+        assert i + self._shape[0] * j < len(self._image_data), f'{i}, {j}: {i + self._shape[0] * j}>{len(self._image_data)}'
+        return DataNode(self._image_data[i + self._shape[0] * j])
 
     def shape(self):
         return self._shape

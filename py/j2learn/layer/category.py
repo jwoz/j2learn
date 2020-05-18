@@ -1,5 +1,5 @@
 from j2learn.node.maximum import MaximumNode
-import random
+
 
 class Category:
     def __init__(self, categories, underlying_layer, build=True):
@@ -16,7 +16,7 @@ class Category:
         self._node = MaximumNode(self._categories, [self._underlying_layer.node(i) for i in range(len(self._categories))])
 
     def node(self, i, j=None):
-        assert i == 1 and (j is None or j ==1)
+        assert i == 1 and (j is None or j == 1)
         return self._node
 
     def shape(self):
@@ -25,4 +25,3 @@ class Category:
     def jacobian(self):
         partial_derivatives = [self._node.derivative()]
         return partial_derivatives
-

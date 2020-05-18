@@ -1,5 +1,6 @@
 import numpy as np
 
+
 class MaximumNode:
     def __init__(self, categories, underlying_nodes):
         self._categories = categories
@@ -12,7 +13,8 @@ class MaximumNode:
             return -1
         return self._categories[i]
 
-    def derivative(self):
+    @staticmethod
+    def derivative():
         return 0
 
     def probability(self):
@@ -27,3 +29,4 @@ class MaximumNode:
         values = [node.value() for node in self._underlying_nodes]
         i = np.argmax(np.array(values))
         jacobian = self._underlying_nodes(i).derivative()
+        return jacobian

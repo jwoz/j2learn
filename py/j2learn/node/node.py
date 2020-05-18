@@ -17,7 +17,7 @@ class Node:
         """
         weighted_sum = self._sum()
         d_activation = self._activation.derivative(weighted_sum)
-        this_derivative =  [weighted_sum * u.value() for u in self._underlying_nodes]
+        this_derivative = [d_activation * u.value() for u in self._underlying_nodes]
         return this_derivative
 
     def update_weights(self, new_weights):

@@ -1,11 +1,14 @@
 from dataclasses import dataclass
 
+
 @dataclass
 class DataNode:
     _value: float
     _derivative: float = 0
+
     def value(self):
         return self._value
+
     def derivative(self):
         return self._derivative
 

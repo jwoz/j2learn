@@ -8,6 +8,8 @@ class reLU:
 
     @staticmethod
     def derivative(z):
-        if z < 0: return 0
-        if z > 0: return 1
+        if z < 0:
+            return 0
+        if z > 0:
+            return 1
         return np.nan()
