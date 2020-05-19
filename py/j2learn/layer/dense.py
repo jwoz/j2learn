@@ -4,11 +4,20 @@ from j2learn.node.node import Node
 
 
 class Dense:
-    def __init__(self, activation, shape, underlying_layer, build=True):
+    is_root = False
+
+    def __init__(self, activation, shape, underlying_layer=None, build=True):
         self._activation = activation
         self._underlying_layer = underlying_layer
         self._shape = shape
         self._nodes = []
+        if underlying_layer is None:
+            return
+        if build:
+            self.build()
+
+    def initialize(self, underlying_layer, build):
+        self._underlying_layer = underlying_layer
         if build:
             self.build()
 
@@ -29,7 +38,8 @@ class Dense:
     def node(self, i, j=None):
         if j is None:
             return self._nodes[i]
-        assert i * self._shape[1] + j < len(self._nodes), f'{i}, {j}, {self._shape}: {i * self._shape[1] * j} < {len(self._nodes)}'
+        assert i * self._shape[1] + j < len(
+            self._nodes), f'{i}, {j}, {self._shape}: {i * self._shape[1] * j} < {len(self._nodes)}'
         return self._nodes[i * self._shape[1] * j]
 
     def shape(self):

@@ -5,15 +5,24 @@ from j2learn.node.node import Node
 
 
 class CNN:
-    def __init__(self, activation, kernel, stride, underlying_layer, build=True, weight=None):
+    is_root = False
+
+    def __init__(self, activation, kernel, stride, underlying_layer=None, build=True, weight=None):
         self._activation = activation
-        self._underlying_layer = underlying_layer
         self._kernel = kernel
         self._stride = stride
         self._shape = None
         self._nodes = []
+        self._underlying_layer = underlying_layer
+        if underlying_layer is None:
+            return
         if build:
             self.build(init=weight)
+
+    def initialize(self, underlying_layer, build):
+        self._underlying_layer = underlying_layer
+        if build:
+            self.build()
 
     def build(self, init=None):
         shape = self._underlying_layer.shape()

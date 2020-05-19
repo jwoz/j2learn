@@ -4,6 +4,8 @@ from j2learn.node.data import DataNode
 
 
 class Image:
+    is_root = True
+
     def __init__(self, image_data=None, shape=None, label=None, maximum=256):
         assert image_data is not None or shape is not None
         self._label = label
@@ -13,11 +15,15 @@ class Image:
         assert image_data is None or shape[0] * shape[1] == len(image_data)
         self._shape = shape
         self._maximum = maximum
-        self._image_data = [0] * shape[1] * shape[0] if image_data is None else [i/maximum for i in image_data]
+        self._image_data = [0] * shape[1] * shape[0] if image_data is None else [i / maximum for i in image_data]
 
     def set_image_data_and_label(self, image_data, label=None):
-        self._image_data = [i/self._maximum for i in image_data]
+        self._image_data = [i / self._maximum for i in image_data]
         self._label = label
+
+    @staticmethod
+    def build():
+        return
 
     def label(self):
         return self._label
@@ -26,7 +32,8 @@ class Image:
         if j is None:
             assert i < len(self._image_data)
             return DataNode(self._image_data[i])
-        assert i * self._shape[1] + j < len(self._image_data), f'{i}, {j}: {i * self._shape[1] + j}>{len(self._image_data)}'
+        assert i * self._shape[1] + j < len(
+            self._image_data), f'{i}, {j}: {i * self._shape[1] + j}>{len(self._image_data)}'
         return DataNode(self._image_data[i * self._shape[1] + j])
 
     def shape(self):
@@ -38,7 +45,7 @@ class Image:
             if i % self._shape[0] == 0:
                 render += '\n'
             if numbers:
-              render += f'{self._image_data[i]:4.2f} ' if self._image_data[i] > 0.01 else '.... '
+                render += f'{self._image_data[i]:4.2f} ' if self._image_data[i] > 0.01 else '.... '
             elif self._image_data[i] > threshold:
                 render += '@'
             else:
