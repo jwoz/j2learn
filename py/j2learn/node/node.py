@@ -7,6 +7,12 @@ class Node:
     def _sum(self):
         return sum([w * u.value() for w, u in zip(self._weights, self._underlying_nodes)])
 
+    def weights(self):
+        return self._weights
+
+    def set_weights(self, weights):
+        self._weights = weights
+
     def value(self):
         sum_of_underlying_nodes = self._sum()
         return self._activation.value(sum_of_underlying_nodes)

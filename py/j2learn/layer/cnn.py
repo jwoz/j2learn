@@ -14,6 +14,7 @@ class CNN:
         self._shape = None
         self._nodes = []
         self._underlying_layer = underlying_layer
+        self._built = False
         if underlying_layer is None:
             return
         if build:
@@ -50,12 +51,22 @@ class CNN:
                 this_cnn_node = Node(self._activation, weights, nodes)
                 self._nodes.append(this_cnn_node)
         self._shape = shape
+        self._built = True
 
     def node(self, i, j=None):
         if j is None:
             return self._nodes[i]
         assert i * self._shape[1] + j < len(self._nodes), f'{i}, {j}, {self._shape}: {i * self._shape[1] + j} < {len(self._nodes)}'
         return self._nodes[i * self._shape[1] + j]
+
+    def count(self):
+        if not self._built:
+            print('Layer not built, no weights count')
+            return 0
+        n = 0
+        for node in self._nodes:
+            n += len(node.weights())
+        return n
 
     def shape(self):
         return self._shape

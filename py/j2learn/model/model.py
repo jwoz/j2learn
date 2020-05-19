@@ -30,8 +30,7 @@ class Model:
                 counts.append((0, 0))
                 n = 0
                 continue
-            layer_weights = layer.weights()
-            layer_count = len(layer_weights)
+            layer_count = layer.count()
             counts.append((n, layer_count + n))
             n += layer_count
         if reset:

@@ -13,6 +13,7 @@ class Category:
             return
         assert len(categories) == self._underlying_layer.shape()[0]
         assert self._underlying_layer.shape()[1] == 1
+        self._built = False
         if build:
             self.build()
 
@@ -26,6 +27,11 @@ class Category:
     def build(self):
         self._node = MaximumNode(self._categories,
                                  [self._underlying_layer.node(i) for i in range(len(self._categories))])
+        self._built = True
+
+    @staticmethod
+    def count():
+        return 0
 
     def node(self, i, j=None):
         assert i == 1 and (j is None or j == 1)
