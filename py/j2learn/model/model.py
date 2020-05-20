@@ -53,11 +53,14 @@ class Model:
             self._weights = weights
         return weights
 
-    def set_weights(self, weights):
+    def set_weights(self, weights, rescan=False):
         if not self._built:
             print('Model must be built for each new image and at least once.')
         n = len(weights)
-        current_weights = self.weights()
+        if rescan:
+            self.weight_counts(reset=True)
+        assert n == self._counts[-1][1]
+
 
     def predict(self):
         assert self._built, 'The model has not been built, cannot predict'

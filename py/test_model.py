@@ -30,3 +30,5 @@ print(weights)
 weight_counts = model.weight_counts()
 print(weight_counts)
 pass
+
+n_weights = model.weight_counts()
