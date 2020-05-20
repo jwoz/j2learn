@@ -61,3 +61,7 @@ class Model:
             print('Model must be built for each new image and at least once.')
         n = len(weights)
         current_weights = self.weights()
+
+    def predict(self):
+        assert self._built, 'The model has not been built, cannot predict'
+        return self._layers[-1].value()

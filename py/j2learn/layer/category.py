@@ -40,6 +40,12 @@ class Category:
     def shape(self):
         return self._shape
 
+    def value(self):
+        return self._node.value()
+
+    def probability(self):
+        return self._node.probability()
+
     def jacobian(self):
         partial_derivatives = [self._node.derivative()]
         return partial_derivatives

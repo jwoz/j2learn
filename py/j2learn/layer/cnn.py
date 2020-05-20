@@ -47,7 +47,7 @@ class CNN:
                             weight = random.random() if init is None else init
                         nodes.append(node)
                         weights.append(weight)
-                weights = [w/sum(weights) for w in weights]
+                weights = [w / sum(weights) for w in weights]
                 this_cnn_node = Node(self._activation, weights, nodes)
                 self._nodes.append(this_cnn_node)
         self._shape = shape
@@ -71,6 +71,9 @@ class CNN:
     def shape(self):
         return self._shape
 
+    def value(self):
+        return [node.value() for node in self._nodes]
+
     def jacobian(self):
         partial_derivatives = [node.derivative() for node in self._nodes]
         return partial_derivatives
@@ -81,7 +84,7 @@ class CNN:
             if i % self._shape[0] == 0:
                 render += '\n'
             if numbers:
-              render += f'{self._nodes[i].value():4.2f} ' if self._nodes[i].value() > 0.01 else '.... '
+                render += f'{self._nodes[i].value():4.2f} ' if self._nodes[i].value() > 0.01 else '.... '
             elif self._nodes[i].value() > threshold:
                 render += '@'
             else:

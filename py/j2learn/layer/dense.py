@@ -57,6 +57,9 @@ class Dense:
     def shape(self):
         return self._shape
 
+    def value(self):
+        return [node.value() for node in self._nodes]
+
     def jacobian(self):
         partial_derivatives = [node.derivative() for node in self._nodes]
         return partial_derivatives
