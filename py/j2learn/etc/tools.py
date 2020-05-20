@@ -2,6 +2,8 @@ from collections import Iterable
 
 
 def flatten(items):
+    # also flatten in pandas ... import seems slow
+    # from pandas.core.common import flatten
     for x in items:
         if isinstance(x, Iterable) and not isinstance(x, (str, bytes)):
             for sub_x in flatten(x):
@@ -9,5 +11,14 @@ def flatten(items):
         else:
             yield x
 
-# also flatten in pandas ... import seems slow
-# from pandas.core.common import flatten
+
+def finite_difference(model, n, probability=True, epsilon=1e-8):
+    original_weights = model.weights()
+    bumped_weights = original_weights.copy()
+    p0 = model.probability() if probability else model.value()
+    bumped_weights[n] = bumped_weights[n] + epsilon
+    model.set_weights(bumped_weights)
+    p1 = model.probability() if probability else model.value()
+    gradient = (p1 - p0) / epsilon
+    model.set_weights(original_weights)
+    return gradient

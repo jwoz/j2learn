@@ -1,5 +1,6 @@
 from j2learn.etc.tools import flatten as flatten_list
 
+
 class Model:
     def __init__(self, layers):
         self._layers = layers
@@ -47,20 +48,14 @@ class Model:
 
     def weights(self, flatten=True, reset=True):
         weights = []
-        counts = []
         n = 0
         for layer in self._layers:
             if layer.is_root:
-                counts.append((0, 0))
-                n = 0
+                assert n == 0
                 continue
             layer_weights = layer.weights()
-            layer_count = len(layer_weights)
             weights.append(layer_weights)
-            counts.append((n, layer_count + n))
-            n += layer_count
         if reset:
-            self._weight_counts = counts
             self._weights = weights
         return list(flatten_list(weights)) if flatten else weights
 
@@ -68,12 +63,11 @@ class Model:
         if not self._built:
             print('Model must be built for each new image and at least once.')
         n = len(weights)
-        if rescan:
+        if rescan or not self._weights_counted:
             self.weight_counts()
-        assert n == self._weight_counts[-1][1]
+        assert n == self.weight_count()
         for count, layer in zip(self._weight_counts, self._layers):
             layer.set_weights(weights[count[0]:count[1]])
-
 
     def predict(self):
         assert self._built, 'The model has not been built, cannot predict'
