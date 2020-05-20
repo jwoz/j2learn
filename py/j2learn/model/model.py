@@ -13,11 +13,12 @@ class Model:
                 layer.initialize(underlying_layer, build)
             underlying_layer = layer
         self._compiled = True
+        self._built = False
+        if build:
+            self.build()
 
     def build(self):
-        if not self._compiled:
-            print('Model must be compiled first.')
-            return
+        assert self._compiled, 'Model must be compiled first.'
         for layer in self._layers:
             layer.build()
         self._built = True
@@ -65,3 +66,12 @@ class Model:
     def predict(self):
         assert self._built, 'The model has not been built, cannot predict'
         return self._layers[-1].value()
+
+    def value(self):
+        assert self._built, 'The model has not been built, cannot predict'
+        return self._layers[-1].value()
+
+    def probability(self):
+        assert self._built, 'The model has not been built, cannot predict'
+        assert hasattr(self._layers[-1], 'probability'), 'Final layer does not have a probability method.'
+        return self._layers[-1].probability()
