@@ -32,7 +32,10 @@ print(weight_counts)
 
 n_weights = model.weight_count()
 
-new_weights = [-1] * n_weights
+new_weights = [-i-1 for i in range(n_weights)]
 model.set_weights(new_weights)
+
+weights = model.weights()
+print(weights)
 
 pass

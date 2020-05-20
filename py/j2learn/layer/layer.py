@@ -43,7 +43,7 @@ class LayerBase:
         for node in self._nodes:
             j = node.weight_count()
             node.set_weights(weights[i:i+j])
-            i = j
+            i += j
 
     def weights(self):
         return [node.weights() for node in self._nodes]
