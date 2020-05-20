@@ -12,13 +12,19 @@ def flatten(items):
             yield x
 
 
+def delistify(v):
+    if isinstance(v, list):
+        return v[0]
+    return v
+
+
 def finite_difference(model, n, probability=True, epsilon=1e-8):
     original_weights = model.weights()
     bumped_weights = original_weights.copy()
-    p0 = model.probability() if probability else model.value()
+    p0 = delistify(model.probability() if probability else model.value())
     bumped_weights[n] = bumped_weights[n] + epsilon
     model.set_weights(bumped_weights)
-    p1 = model.probability() if probability else model.value()
+    p1 = delistify(model.probability() if probability else model.value())
     gradient = (p1 - p0) / epsilon
     model.set_weights(original_weights)
     return gradient
