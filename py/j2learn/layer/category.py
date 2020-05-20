@@ -3,8 +3,6 @@ from j2learn.layer.layer import LayerBase
 
 
 class Category(LayerBase):
-    is_root = False
-
     def __init__(self, categories, underlying_layer=None, build=True, weight=None):
         self._categories = categories
         super().__init__((1, 1), underlying_layer, build, weight)
@@ -19,6 +17,10 @@ class Category(LayerBase):
     def build(self, init=None):
         self._nodes = [MaximumNode(self._categories, [self._underlying_layer.node(i) for i in range(len(self._categories))])]
         self._built = True
+
+    @staticmethod
+    def set_weights(weights):
+        pass
 
     def weights(self):
         return []

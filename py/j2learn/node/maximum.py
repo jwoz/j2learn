@@ -7,6 +7,10 @@ class MaximumNode:
         self._underlying_nodes = underlying_nodes
 
     @staticmethod
+    def count():
+        return 0
+
+    @staticmethod
     def weights():
         return []
 

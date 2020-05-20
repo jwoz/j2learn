@@ -5,8 +5,6 @@ from j2learn.layer.layer import LayerBase
 
 
 class Dense(LayerBase):
-    is_root = False
-
     def __init__(self, activation, shape, underlying_layer=None, build=True, weight=None):
         self._activation = activation
         super().__init__(shape, underlying_layer, build, weight)

@@ -29,6 +29,10 @@ print(weights)
 
 weight_counts = model.weight_counts()
 print(weight_counts)
-pass
 
-n_weights = model.weight_counts()
+n_weights = model.weight_count()
+
+new_weights = [-1] * n_weights
+model.set_weights(new_weights)
+
+pass

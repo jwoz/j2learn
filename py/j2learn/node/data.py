@@ -6,6 +6,10 @@ class DataNode:
     _value: float
     _derivative: float = 0
 
+    @staticmethod
+    def weight_count():
+        return 0
+
     def value(self):
         return self._value
 

@@ -22,6 +22,10 @@ class Image:
         self._label = label
 
     @staticmethod
+    def set_weights(weights):
+        assert not len(weights)
+
+    @staticmethod
     def build():
         return
 

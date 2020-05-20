@@ -6,8 +6,6 @@ from j2learn.layer.layer import LayerBase
 
 
 class CNN(LayerBase):
-    is_root = False
-
     def __init__(self, activation, kernel, stride, underlying_layer=None, build=True, weight=None):
         self._activation = activation
         self._kernel = kernel

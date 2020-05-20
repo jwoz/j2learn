@@ -1,4 +1,6 @@
 class LayerBase:
+    is_root = False
+
     def __init__(self, shape, underlying_layer, build, weight):
         self._underlying_layer = underlying_layer
         self._shape = shape
@@ -35,6 +37,13 @@ class LayerBase:
             return self._shape
         assert dimension < len(self._shape)
         return self._shape[dimension]
+
+    def set_weights(self, weights):
+        i = 0
+        for node in self._nodes:
+            j = node.weight_count()
+            node.set_weights(weights[i:i+j])
+            i = j
 
     def weights(self):
         return [node.weights() for node in self._nodes]

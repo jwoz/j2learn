@@ -7,6 +7,10 @@ class Node:
     def _sum(self):
         return sum([w * u.value() for w, u in zip(self._weights, self._underlying_nodes)])
 
+    def weight_count(self):
+        assert len(self._weights) == len(self._underlying_nodes)
+        return len(self._weights)
+
     def weights(self):
         return self._weights
 
