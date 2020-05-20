@@ -21,7 +21,7 @@ class Category(LayerBase):
         self._built = True
 
     def weights(self):
-        return [[1] * self._underlying_layer.shape(0)]
+        return []
 
     def probability(self):
         return self._nodes[0].probability()

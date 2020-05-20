@@ -15,7 +15,7 @@ class LayerBase:
     def build(self, init=None):
         raise NotImplementedError('Child class must implement')
 
-    def count(self):
+    def weight_count(self):
         if not self._built:
             print('Layer not built, no weights to count')
             return 0

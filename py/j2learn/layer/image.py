@@ -52,11 +52,17 @@ class Image:
                 render += '.'
         return render
 
-    def weights(self):
-        return [1] * len(self._image_data)
+    @staticmethod
+    def weight_count():
+        return 0
+
+    @staticmethod
+    def weights():
+        return []
 
     def value(self):
         return self._image_data
 
-    def jacobian(self):
-        return [[]]
+    @staticmethod
+    def jacobian():
+        return []

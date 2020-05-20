@@ -6,9 +6,13 @@ class MaximumNode:
         self._categories = categories
         self._underlying_nodes = underlying_nodes
 
+    @staticmethod
+    def weights():
+        return []
+
     def value(self):
         values = [node.value() for node in self._underlying_nodes]
-        i = np.argmax(np.array(values))
+        i = int(np.argmax(np.array(values)))
         if values[i] == 0:
             return -1
         return self._categories[i]

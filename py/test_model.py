@@ -26,3 +26,7 @@ print(prob)
 
 weights = model.weights()
 print(weights)
+
+weight_counts = model.weight_counts()
+print(weight_counts)
+pass

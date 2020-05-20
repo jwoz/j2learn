@@ -23,15 +23,11 @@ class Model:
             layer.build()
         self._built = True
 
-    def counts(self, reset=True):
+    def weight_counts(self, reset=True):
         counts = []
         n = 0
         for layer in self._layers:
-            if layer.is_root:
-                counts.append((0, 0))
-                n = 0
-                continue
-            layer_count = layer.count()
+            layer_count = layer.weight_count()
             counts.append((n, layer_count + n))
             n += layer_count
         if reset:
