@@ -1,51 +1,27 @@
 from j2learn.node.maximum import MaximumNode
+from j2learn.layer.layer import LayerBase
 
 
-class Category:
+class Category(LayerBase):
     is_root = False
 
-    def __init__(self, categories, underlying_layer=None, build=True):
+    def __init__(self, categories, underlying_layer=None, build=True, weight=None):
         self._categories = categories
-        self._underlying_layer = underlying_layer
-        self._shape = (1, 1)
-        self._node = None
-        if underlying_layer is None:
-            return
-        assert len(categories) == self._underlying_layer.shape()[0]
-        assert self._underlying_layer.shape()[1] == 1
-        self._built = False
-        if build:
-            self.build()
+        super().__init__((1, 1), underlying_layer, build, weight)
+        assert underlying_layer is None or len(categories) == self._underlying_layer.shape(0)
+        assert underlying_layer is None or self._underlying_layer.shape(1) == 1
 
     def initialize(self, underlying_layer, build):
-        self._underlying_layer = underlying_layer
-        assert len(self._categories) == self._underlying_layer.shape()[0]
-        assert self._underlying_layer.shape()[1] == 1
-        if build:
-            self.build()
+        super().initialize(underlying_layer, build)
+        assert len(self._categories) == self._underlying_layer.shape(0)
+        assert self._underlying_layer.shape(1) == 1
 
-    def build(self):
-        self._node = MaximumNode(self._categories,
-                                 [self._underlying_layer.node(i) for i in range(len(self._categories))])
+    def build(self, init=None):
+        self._nodes = [MaximumNode(self._categories, [self._underlying_layer.node(i) for i in range(len(self._categories))])]
         self._built = True
 
-    @staticmethod
-    def count():
-        return 0
-
-    def node(self, i, j=None):
-        assert i == 1 and (j is None or j == 1)
-        return self._node
-
-    def shape(self):
-        return self._shape
-
-    def value(self):
-        return self._node.value()
+    def weights(self):
+        return [[1] * self._underlying_layer.shape(0)]
 
     def probability(self):
-        return self._node.probability()
-
-    def jacobian(self):
-        partial_derivatives = [self._node.derivative()]
-        return partial_derivatives
+        return self._nodes[0].probability()

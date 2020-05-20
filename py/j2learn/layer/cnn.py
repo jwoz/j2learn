@@ -2,28 +2,17 @@ import random
 
 from j2learn.node.data import ZeroNode
 from j2learn.node.node import Node
+from j2learn.layer.layer import LayerBase
 
 
-class CNN:
+class CNN(LayerBase):
     is_root = False
 
     def __init__(self, activation, kernel, stride, underlying_layer=None, build=True, weight=None):
         self._activation = activation
         self._kernel = kernel
         self._stride = stride
-        self._shape = None
-        self._nodes = []
-        self._underlying_layer = underlying_layer
-        self._built = False
-        if underlying_layer is None:
-            return
-        if build:
-            self.build(init=weight)
-
-    def initialize(self, underlying_layer, build):
-        self._underlying_layer = underlying_layer
-        if build:
-            self.build()
+        super().__init__(None, underlying_layer, build, weight)
 
     def build(self, init=None):
         shape = self._underlying_layer.shape()
@@ -53,40 +42,3 @@ class CNN:
         self._shape = shape
         self._built = True
 
-    def node(self, i, j=None):
-        if j is None:
-            return self._nodes[i]
-        assert i * self._shape[1] + j < len(self._nodes), f'{i}, {j}, {self._shape}: {i * self._shape[1] + j} < {len(self._nodes)}'
-        return self._nodes[i * self._shape[1] + j]
-
-    def count(self):
-        if not self._built:
-            print('Layer not built, no weights count')
-            return 0
-        n = 0
-        for node in self._nodes:
-            n += len(node.weights())
-        return n
-
-    def shape(self):
-        return self._shape
-
-    def value(self):
-        return [node.value() for node in self._nodes]
-
-    def jacobian(self):
-        partial_derivatives = [node.derivative() for node in self._nodes]
-        return partial_derivatives
-
-    def display(self, numbers=False, threshold=0.8):
-        render = ''
-        for i in range(len(self._nodes)):
-            if i % self._shape[0] == 0:
-                render += '\n'
-            if numbers:
-                render += f'{self._nodes[i].value():4.2f} ' if self._nodes[i].value() > 0.01 else '.... '
-            elif self._nodes[i].value() > threshold:
-                render += '@'
-            else:
-                render += '.'
-        return render

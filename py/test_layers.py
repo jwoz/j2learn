@@ -27,8 +27,8 @@ print(second_cnn.display(threshold=0.5))
 ### more layers
 dense = Dense(reLU(), (10, 1), second_cnn)
 category = Category([i for i in range(10)], dense)
-print(category.node(1).value())
-print(category.node(1).probability())
+print(category.node(0).value())
+print(category.node(0).probability())
 
 #### replace image
 r = 388

@@ -17,9 +17,12 @@ dense = Dense(reLU(), (10, 1))
 category = Category([i for i in range(10)])
 
 model = Model(layers=[image_layer, cnn, dense, category])
-model.compile(build =True)
+model.compile(build=True)
 
 cat = model.predict()
 print(cat)
 prob = model.probability()
 print(prob)
+
+weights = model.weights()
+print(weights)

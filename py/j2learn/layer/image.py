@@ -52,5 +52,11 @@ class Image:
                 render += '.'
         return render
 
+    def weights(self):
+        return [1] * len(self._image_data)
+
+    def value(self):
+        return self._image_data
+
     def jacobian(self):
         return [[]]
