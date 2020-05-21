@@ -25,15 +25,11 @@ class CNN(LayerBase):
                     for l in range(self._kernel[1]):
                         kk = nx - self._kernel[0] // 2 + k + k * self._stride[0]
                         ll = ny - self._kernel[1] // 2 + l + l * self._stride[1]
-                        if kk < 0 or ll < 0 or kk >= shape[0] or ll >= shape[1]:
-                            node = ZeroNode()
-                            weight = 0
-                        else:
-                            # print(f'{nx} {ny}: {kk} {ll}')
+                        if not(kk < 0 or ll < 0 or kk >= shape[0] or ll >= shape[1]):
                             node = self._underlying_layer.node(kk, ll)
                             weight = random.random() if init is None else init
-                        nodes.append(node)
-                        weights.append(weight)
+                            nodes.append(node)
+                            weights.append(weight)
                 weights = [w / sum(weights) for w in weights]
                 this_cnn_node = Node(self._activation, weights, nodes)
                 self._nodes.append(this_cnn_node)

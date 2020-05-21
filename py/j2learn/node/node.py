@@ -33,5 +33,14 @@ class Node:
         this_derivative = [d_activation * u.value() for u in self._underlying_nodes]
         return this_derivative
 
+    def chain_rule_factors(self):
+        """
+        :return: the Jacobian wrt current weights
+        """
+        weighted_sum = self._weighted_sum_underlying()
+        d_activation = self._activation.derivative(weighted_sum)
+        factors = [d_activation * w for w in self._weights]
+        return factors
+
     def update_weights(self, new_weights):
         self._weights = new_weights

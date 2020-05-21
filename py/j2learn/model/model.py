@@ -81,3 +81,20 @@ class Model:
         assert self._built, 'The model has not been built, cannot predict'
         assert hasattr(self._layers[-1], 'probability'), 'Final layer does not have a probability method.'
         return self._layers[-1].probability()
+
+    def jacobian(self):
+        jacobians = []
+        chain_rule_factors = []
+        for layer in self._layers[::-1]:
+            partial_jacobian = layer.jacobian()
+            jacobian = []
+            if len(chain_rule_factors):
+                for f in chain_rule_factors:
+                    for ff, j in zip(f, partial_jacobian):
+                        derivatives = [ff * jj for jj in j]
+                        jacobian.append(derivatives)
+            else:
+                jacobian = partial_jacobian
+            jacobians.append(jacobian)
+            chain_rule_factors = layer.chain_rule_factors()
+        return jacobians

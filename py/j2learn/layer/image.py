@@ -68,5 +68,9 @@ class Image:
         return self._image_data
 
     @staticmethod
+    def chain_rule_factors():
+        return []
+
+    @staticmethod
     def jacobian():
         return []

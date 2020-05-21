@@ -55,6 +55,10 @@ class LayerBase:
         partial_derivatives = [node.derivative() for node in self._nodes]
         return partial_derivatives
 
+    def chain_rule_factors(self):
+        factors = [node.chain_rule_factors() for node in self._nodes]
+        return factors
+
     def display(self, numbers=False, threshold=0.8):
         render = ''
         for i in range(len(self._nodes)):
