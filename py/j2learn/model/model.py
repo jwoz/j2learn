@@ -89,12 +89,11 @@ class Model:
             partial_jacobian = layer.jacobian()
             jacobian = []
             if len(chain_rule_factors):
-                for f in chain_rule_factors:
-                    for ff, j in zip(f, partial_jacobian):
-                        derivatives = [ff * jj for jj in j]
-                        jacobian.append(derivatives)
+                for i, p in enumerate(partial_jacobian):
+                    derivatives = [pp * f[i] for pp in p for f in chain_rule_factors]
+                    jacobian.append(derivatives)
             else:
                 jacobian = partial_jacobian
-            jacobians.append(jacobian)
+            jacobians.insert(0, jacobian)
             chain_rule_factors = layer.chain_rule_factors()
         return jacobians

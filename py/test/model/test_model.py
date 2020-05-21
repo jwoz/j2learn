@@ -27,5 +27,7 @@ class TestModel(TestCase):
         for i in range(weight_count):
             d = finite_difference(model, i, False)
             bumped_derivatives.append(d)
-
+        non_zero_bumped_derivatives = [b for b in flatten(bumped_derivatives) if b !=0]
+        for m, b in zip(mod_jacb, non_zero_bumped_derivatives):
+            self.assertAlmostEqual(m, b, 4)
         print(mod_jacb)
