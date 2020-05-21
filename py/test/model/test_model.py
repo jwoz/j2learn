@@ -21,7 +21,28 @@ class TestModel(TestCase):
         self.assertEqual(weight_count, 14)
 
         mod_jacb = list(flatten(model.jacobian()))
-        self.assertEqual(len(mod_jacb), 20)
+        self.assertEqual(len(mod_jacb), 20) # + 8 zero derivatives
+
+        bumped_derivatives = []
+        for i in range(weight_count):
+            d = finite_difference(model, i, False)
+            bumped_derivatives.append(d)
+        non_zero_bumped_derivatives = [b for b in flatten(bumped_derivatives) if b !=0]
+        for m, b in zip(mod_jacb, non_zero_bumped_derivatives):
+            self.assertAlmostEqual(m, b, 4)
+        print(mod_jacb)
+
+    def test_jacobian_medium(self):
+        image = [random.randint(0, 255) for _ in range(16)]
+        image = Image(image_data=image)
+        dense = Dense(reLU(), (2, 1))
+        cnn_a = CNN(reLU(), (1, 2), (0, 0))
+        cnn_b = CNN(reLU(), (3, 3), (0, 0))
+        model = Model(layers=[image, cnn_a, cnn_b, dense])
+        model.compile(build=True)
+        weight_count = model.weight_count()
+
+        mod_jacb = list(flatten(model.jacobian()))
 
         bumped_derivatives = []
         for i in range(weight_count):
