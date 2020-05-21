@@ -1,11 +1,9 @@
 from j2learn.data.mnist_images import MNISTData
+from j2learn.etc.tools import finite_difference, flatten
 from j2learn.function.function import reLU
-from j2learn.layer.category import Category
-from j2learn.layer.cnn import CNN
 from j2learn.layer.dense import Dense
 from j2learn.layer.image import Image
 from j2learn.model.model import Model
-from j2learn.etc.tools import finite_difference
 
 mndata = MNISTData(path='C:/Users/juergen/Dropbox/data/mnist')
 
@@ -26,15 +24,18 @@ while i < weight_count:
     gradient = finite_difference(model, i, probability=False, epsilon=0.01)
     gradients.append(gradient)
     i += 1
-print(gradients)
+jacobian = list(flatten(dense.jacobian()))
+assert len(gradients) == len(jacobian)
+for g, j in zip(gradients, jacobian):
+    assert abs(g - j) < 0.001
 
+nonzero_jacobian = [(i, j) for i, j in enumerate(jacobian) if j != 0]
+print(nonzero_jacobian)
 
 cat = model.predict()
 print(cat)
 prob = model.probability()
 print(prob)
-
-
 
 weights = model.weights()
 print(weights)

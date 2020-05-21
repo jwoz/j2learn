@@ -4,9 +4,11 @@ class Node:
         self._weights = weights
         self._underlying_nodes = underlying_nodes
 
-    def _weighted_sum_underlying(self):
+    def _weighted_sum_underlying(self, normalize=False):
         weighted_sum = sum([w * u.value() for w, u in zip(self._weights, self._underlying_nodes)])
-        return weighted_sum / sum(self._weights)
+        if normalize:
+            weighted_sum /= sum(self._weights)
+        return weighted_sum
 
     def weight_count(self):
         assert len(self._weights) == len(self._underlying_nodes)
