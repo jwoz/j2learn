@@ -16,18 +16,47 @@ class TestModel(TestCase):
         if expected_no_weights is not None:
             self.assertEqual(weight_count, expected_no_weights)
 
-        mod_jacb = list(flatten(model.jacobian()))
+        analytic_jacobian = model.jacobian()
+        flattened_analytic_jacobian = list(flatten(analytic_jacobian))
         if expected_no_partials is not None:
-            self.assertEqual(len(mod_jacb), expected_no_partials)
+            self.assertEqual(len(flattened_analytic_jacobian), expected_no_partials)
 
         bumped_derivatives = []
         for i in range(weight_count):
             d = finite_difference(model, i, False)
             bumped_derivatives.append(d)
         non_zero_bumped_derivatives = [b for b in flatten(bumped_derivatives) if b != 0]
-        for m, b in zip(mod_jacb, non_zero_bumped_derivatives):
+        for m, b in zip(flattened_analytic_jacobian, non_zero_bumped_derivatives):
             self.assertAlmostEqual(m, b, 4)
-        print(mod_jacb)
+        print(flattened_analytic_jacobian)
+
+    def test_jacobian_tiny(self):  # passes
+        image = [random.randint(0, 255) for _ in range(1)]
+        small_image = Image(image_data=image)
+        dense = Dense(reLU(), (1, 1))
+        cnn = CNN(reLU(), (1, 1), (0, 0))
+        model = Model(layers=[small_image, cnn, dense])
+        self._rum_derivatives_test(
+            model
+        )
+
+    def test_jacobian_tiny_dense(self):  # passes
+        image = [random.randint(0, 255) for _ in range(2)]
+        image = Image(image_data=image, shape=(2, 1))
+        dense = Dense(reLU(), (1, 1))
+        model = Model(layers=[image, dense])
+        self._rum_derivatives_test(
+            model
+        )
+
+    def test_jacobian_tiny_cnn(self):  #
+        image = [random.randint(0, 255) for _ in range(2)]
+        image = Image(image_data=image, shape=(2, 1))
+        cnn = CNN(reLU(), (1, 1), (0, 0))
+        model = Model(layers=[image, cnn])
+        self._rum_derivatives_test(
+            model
+        )
 
     def test_jacobian_small(self):
         image = [random.randint(0, 255) for _ in range(4)]

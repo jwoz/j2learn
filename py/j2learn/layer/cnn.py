@@ -1,15 +1,14 @@
 import random
 
-from j2learn.node.data import ZeroNode
-from j2learn.node.node import Node
 from j2learn.layer.layer import LayerBase
+from j2learn.node.node import Node
 
 
 class CNN(LayerBase):
-    def __init__(self, activation, kernel, stride, underlying_layer=None, build=True, weight=None):
+    def __init__(self, activation, kernel, stride=None, underlying_layer=None, build=True, weight=None):
         self._activation = activation
         self._kernel = kernel
-        self._stride = stride
+        self._stride = (0, 0) if stride is None else stride
         super().__init__(None, underlying_layer, build, weight)
 
     def build(self, init=None):
@@ -25,7 +24,7 @@ class CNN(LayerBase):
                     for l in range(self._kernel[1]):
                         kk = nx - self._kernel[0] // 2 + k + k * self._stride[0]
                         ll = ny - self._kernel[1] // 2 + l + l * self._stride[1]
-                        if not(kk < 0 or ll < 0 or kk >= shape[0] or ll >= shape[1]):
+                        if not (kk < 0 or ll < 0 or kk >= shape[0] or ll >= shape[1]):
                             node = self._underlying_layer.node(kk, ll)
                             weight = random.random() if init is None else init
                             nodes.append(node)
@@ -35,4 +34,3 @@ class CNN(LayerBase):
                 self._nodes.append(this_cnn_node)
         self._shape = shape
         self._built = True
-

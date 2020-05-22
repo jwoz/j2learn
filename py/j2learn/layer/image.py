@@ -72,5 +72,5 @@ class Image:
         return []
 
     @staticmethod
-    def jacobian():
+    def jacobian(_=None):
         return []

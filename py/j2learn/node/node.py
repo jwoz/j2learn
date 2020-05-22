@@ -24,22 +24,22 @@ class Node:
         sum_of_underlying_nodes = self._weighted_sum_underlying()
         return self._activation.value(sum_of_underlying_nodes)
 
-    def derivative(self):
+    def derivative(self, chain_rule_factor=1):
         """
         :return: the Jacobian wrt current weights
         """
         weighted_sum = self._weighted_sum_underlying()
         d_activation = self._activation.derivative(weighted_sum)
-        this_derivative = [d_activation * u.value() for u in self._underlying_nodes]
+        this_derivative = [chain_rule_factor * d_activation * u.value() for u in self._underlying_nodes]
         return this_derivative
 
-    def chain_rule_factors(self):
+    def chain_rule_factors(self, chain_rule_factor=1):
         """
         :return: the Jacobian wrt current weights
         """
         weighted_sum = self._weighted_sum_underlying()
         d_activation = self._activation.derivative(weighted_sum)
-        factors = [d_activation * w for w in self._weights]
+        factors = [chain_rule_factor * d_activation * w for w in self._weights]
         return factors
 
     def update_weights(self, new_weights):

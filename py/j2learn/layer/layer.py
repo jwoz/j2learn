@@ -42,7 +42,7 @@ class LayerBase:
         i = 0
         for node in self._nodes:
             j = node.weight_count()
-            node.set_weights(weights[i:i+j])
+            node.set_weights(weights[i:i + j])
             i += j
 
     def weights(self):
@@ -51,12 +51,32 @@ class LayerBase:
     def value(self):
         return [node.value() for node in self._nodes]
 
-    def jacobian(self):
-        partial_derivatives = [node.derivative() for node in self._nodes]
+    def jacobian(self, chain_rule_factors=None):
+        derivatives = []
+        if chain_rule_factors is None or not len(chain_rule_factors):
+            partial_derivatives = [node.derivative() for node in self._nodes]
+        else:
+            partial_derivatives = [node.derivative(f) for f, node in zip(chain_rule_factors, self._nodes)]
+        derivatives.insert(0, partial_derivatives)
+        chain_rule_factors = self.chain_rule_factors(chain_rule_factors)
+        for factors in chain_rule_factors:
+            underlying_derivatives = self._underlying_layer.jacobian(factors)
+            if len(underlying_derivatives):
+                partial_derivatives.insert(0, underlying_derivatives)
         return partial_derivatives
 
-    def chain_rule_factors(self):
-        factors = [node.chain_rule_factors() for node in self._nodes]
+    def jacobian_broken(self, chain_rule_factors=None):
+        if chain_rule_factors is None or not len(chain_rule_factors):
+            partial_derivatives = [node.derivative() for node in self._nodes]
+        else:
+            partial_derivatives = [[node.derivative(f) for f, node in zip(crf, self._nodes)] for crf in chain_rule_factors]
+        return partial_derivatives
+
+    def chain_rule_factors(self, chain_rule_factors=None):
+        if chain_rule_factors is None or not len(chain_rule_factors):
+            factors = [node.chain_rule_factors() for node in self._nodes]
+        else:
+            factors = [node.chain_rule_factors(f) for f, node in zip(chain_rule_factors, self._nodes)] # returns 2d array: list of nodes of list of underlying nodes
         return factors
 
     def display(self, numbers=False, threshold=0.8):

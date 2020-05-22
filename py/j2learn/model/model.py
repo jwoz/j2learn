@@ -83,17 +83,15 @@ class Model:
         return self._layers[-1].probability()
 
     def jacobian(self):
-        jacobians = []
-        chain_rule_factors = []
-        for layer in self._layers[::-1]:
-            partial_jacobian = layer.jacobian()
-            jacobian = []
-            if len(chain_rule_factors):
-                for i, p in enumerate(partial_jacobian):
-                    derivatives = [pp * f[i] for pp in p for f in chain_rule_factors]
-                    jacobian.append(derivatives)
-            else:
-                jacobian = partial_jacobian
-            jacobians.insert(0, jacobian)
-            chain_rule_factors = layer.chain_rule_factors()
-        return jacobians
+        # jacobians = []
+        layer = self._layers[-1]
+        jacobian = layer.jacobian()
+            # partial_jacobian = layer.jacobian(chain_rule_factors)
+            # jacobian = []
+            # if len(chain_rule_factors):
+            #     for i, p in enumerate(partial_jacobian):
+            #         derivatives = [pp * f[i] for pp in p for f in chain_rule_factors]
+            #         jacobian.append(derivatives)
+            # else:
+            #     jacobian = partial_jacobian
+        return jacobian
