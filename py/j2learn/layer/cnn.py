@@ -2,7 +2,7 @@ import random
 
 from j2learn.layer.layer import LayerBase
 from j2learn.node.node import Node
-from j2learn.node.weighted_node import WeightedNode
+from j2learn.node.weight import Weight
 
 
 class CNN(LayerBase):
@@ -29,8 +29,8 @@ class CNN(LayerBase):
                             weight = random.random() if init is None else init
                             nodes.append(node)
                             weights.append(weight)
-                weights = [w / sum(weights) for w in weights]
-                this_cnn_node = Node(self._activation, [WeightedNode(weight, node) for weight, node in zip(weights, nodes)])
+                weights = [Weight(w / sum(weights)) for w in weights]
+                this_cnn_node = Node(self._activation, weights, nodes)
                 self._nodes.append(this_cnn_node)
         self._shape = shape
         self._built = True
