@@ -1,7 +1,7 @@
 import random
 from unittest import TestCase
 
-from j2learn.etc.tools import flatten, finite_difference
+from j2learn.etc.tools import flatten, finite_differences
 from j2learn.function.function import reLU
 from j2learn.layer.cnn import CNN
 from j2learn.layer.dense import Dense
@@ -16,20 +16,18 @@ class TestModel(TestCase):
         if expected_no_weights is not None:
             self.assertEqual(weight_count, expected_no_weights)
         # are these weights a weakref???
-        weights = model.weights(flatten=True)
         analytic_jacobian = model.jacobian()
         flattened_analytic_jacobian = list(flatten(analytic_jacobian))
         if expected_no_partials is not None:
             self.assertEqual(len(flattened_analytic_jacobian), expected_no_partials)
 
         # go through the weights above and bump each. not this arbitrary list.
-        bumped_derivatives = []
-        for i in range(weight_count):
-            d = finite_difference(model, i, False)
-            bumped_derivatives.append(d)
-        non_zero_bumped_derivatives = [b for b in flatten(bumped_derivatives) if b != 0]
-        for m, b in zip(flattened_analytic_jacobian, non_zero_bumped_derivatives):
-            self.assertAlmostEqual(m, b, 4)
+        bumped_derivatives = finite_differences(model, False)
+        for w in model.weights(flatten=True, reset=False):
+            a = w.derivative()
+            b = bumped_derivatives[w.id]
+            for aa, bb in zip(a, b):
+                self.assertAlmostEqual(aa, bb, 4)
         print(flattened_analytic_jacobian)
 
     def test_jacobian_tiny(self):  # passes
@@ -51,7 +49,7 @@ class TestModel(TestCase):
             model
         )
 
-    def test_jacobian_tiny_cnn(self):  #
+    def test_jacobian_tiny_cnn(self):  # passes
         image = [random.randint(0, 255) for _ in range(2)]
         image = Image(image_data=image, shape=(2, 1))
         cnn = CNN(reLU(), (1, 1), (0, 0))
@@ -67,9 +65,7 @@ class TestModel(TestCase):
         cnn = CNN(reLU(), (1, 2), (0, 0))
         model = Model(layers=[small_image, cnn, dense])
         self._rum_derivatives_test(
-            model,
-            14,
-            20  # + 8 zerp derivatives
+            model
         )
 
     def test_jacobian_cnn(self):

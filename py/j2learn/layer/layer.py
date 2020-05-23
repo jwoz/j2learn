@@ -62,8 +62,8 @@ class LayerBase:
         for factors in chain_rule_factors:
             underlying_derivatives = self._underlying_layer.jacobian(factors)
             if len(underlying_derivatives):
-                partial_derivatives.insert(0, underlying_derivatives)
-        return partial_derivatives
+                derivatives.insert(0, underlying_derivatives)
+        return derivatives
 
     def jacobian_broken(self, chain_rule_factors=None):
         if chain_rule_factors is None or not len(chain_rule_factors):

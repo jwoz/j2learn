@@ -12,13 +12,17 @@ def flatten(items):
             yield x
 
 
-def finite_difference(model, n, probability=True, epsilon=1e-8):
-    original_weights = model.weights()
-    bumped_weights = original_weights.copy()
+def finite_differences(model, probability=True, nonzero=True, epsilon=1e-8):
+    weights = model.weights(flatten=True, reset=True)
     p0 = model.probability() if probability else model.value()
-    bumped_weights[n] = bumped_weights[n] + epsilon
-    model.set_weights(bumped_weights)
-    p1 = model.probability() if probability else model.value()
-    model.set_weights(original_weights)
-    gradient = [(pp1 - pp0) / epsilon for pp0, pp1 in zip(p0, p1)]
-    return gradient
+    gradients = {}
+    for w in weights:
+        original = w.weight()
+        w.set_weight(original + epsilon)
+        p1 = model.probability() if probability else model.value()
+        gradient = [(pp1 - pp0) / epsilon for pp0, pp1 in zip(p0, p1)]
+        if nonzero:
+            gradient = [g for g in gradient if g != 0]
+        gradients[w.id] = gradient
+        w.set_weight(original)
+    return gradients
