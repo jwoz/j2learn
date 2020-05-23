@@ -15,12 +15,14 @@ class TestModel(TestCase):
         weight_count = model.weight_count()
         if expected_no_weights is not None:
             self.assertEqual(weight_count, expected_no_weights)
-
+        # are these weights a weakref???
+        weights = model.weights(flatten=True)
         analytic_jacobian = model.jacobian()
         flattened_analytic_jacobian = list(flatten(analytic_jacobian))
         if expected_no_partials is not None:
             self.assertEqual(len(flattened_analytic_jacobian), expected_no_partials)
 
+        # go through the weights above and bump each. not this arbitrary list.
         bumped_derivatives = []
         for i in range(weight_count):
             d = finite_difference(model, i, False)

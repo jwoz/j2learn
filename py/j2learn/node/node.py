@@ -15,9 +15,10 @@ class Node:
         return len(self._weights)
 
     def weights(self):
-        return [w.weight() for w in self._weights]
+        return self._weights
 
     def set_weights(self, weights):
+        assert len(weights) == len(self._weights)
         for w, ww in zip(self._weights, weights):
             w.set_weight(ww)
 
@@ -31,10 +32,9 @@ class Node:
         """
         weighted_sum = self._weighted_sum_underlying()
         d_activation = self._activation.derivative(weighted_sum)
-        derivatives = [chain_rule_factor * d_activation * u.value() for u in self._underlying_nodes]
-        for w, d in zip(self._weights, derivatives):
-            w.set_derivative(d)
-        return derivatives
+        for w, u in zip(self._weights, self._underlying_nodes):
+            w.set_derivative(chain_rule_factor*d_activation*u.value())
+        return [w.derivative() for w in self._weights]
 
     def chain_rule_factors(self, chain_rule_factor=1):
         """
