@@ -2,6 +2,7 @@ import random
 
 from j2learn.layer.layer import LayerBase
 from j2learn.node.node import Node
+from j2learn.node.weighted_node import WeightedNode
 
 
 class CNN(LayerBase):
@@ -16,7 +17,6 @@ class CNN(LayerBase):
         self._nodes = []
         for nx in range(shape[0]):
             for ny in range(shape[1]):
-                n = nx + ny * shape[0]
                 nodes = []
                 weights = []
                 # collect nodes according to kernel and stride
@@ -30,7 +30,7 @@ class CNN(LayerBase):
                             nodes.append(node)
                             weights.append(weight)
                 weights = [w / sum(weights) for w in weights]
-                this_cnn_node = Node(self._activation, weights, nodes)
+                this_cnn_node = Node(self._activation, [WeightedNode(weight, node) for weight, node in zip(weights, nodes)])
                 self._nodes.append(this_cnn_node)
         self._shape = shape
         self._built = True

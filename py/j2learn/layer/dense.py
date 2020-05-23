@@ -2,6 +2,7 @@ import random
 
 from j2learn.node.node import Node
 from j2learn.layer.layer import LayerBase
+from j2learn.node.weighted_node import WeightedNode
 
 
 class Dense(LayerBase):
@@ -21,5 +22,5 @@ class Dense(LayerBase):
                 nodes.append(node)
                 weights.append(weight)
             weights = [w / sum(weights) for w in weights]
-            self._nodes.append(Node(self._activation, weights, nodes))
+            self._nodes.append(Node(self._activation, [WeightedNode(weight, node) for weight, node in zip(weights, nodes)]))
         self._built = True
