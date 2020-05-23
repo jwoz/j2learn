@@ -32,18 +32,6 @@ class Model:
             self.weights()
         return len(self._weights)
 
-    # def weight_counts(self):
-    #     if not self._weights_counted:
-    #         counts = []
-    #         n = 0
-    #         for layer in self._layers:
-    #             layer_count = layer.weight_count()
-    #             counts.append((n, layer_count + n))
-    #             n += layer_count
-    #         self._weight_counts = counts
-    #         self._weights_counted = True
-    #     return self._weight_counts
-
     def weights(self, flatten=True, reset=True):
         weights = []
         n = 0

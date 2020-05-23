@@ -81,3 +81,19 @@ class TestModel(TestCase):
         self._rum_derivatives_test(
             model
         )
+
+    def test_jacobian_medium(self):
+        image = [random.randint(0, 255) for _ in range(9)]
+        image = Image(image_data=image)
+        cnn_a = CNN(reLU(), (3, 3), (0, 0))
+        cnn_b = CNN(reLU(), (3, 3), (0, 0))
+        dense = CNN(reLU(), (1, 1), (0, 0))
+        model = Model(layers=[
+            image,
+            cnn_a,
+            cnn_b,
+            # dense,
+        ])
+        self._rum_derivatives_test(
+            model
+        )
