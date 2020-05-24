@@ -26,8 +26,11 @@ class TestModel(TestCase):
         for w in model.weights(flatten=True, reset=False):
             a = w.derivative()
             b = bumped_derivatives[w.id]
-            for aa, bb in zip(a, b):
-                self.assertAlmostEqual(aa, bb, 4)
+            self.assertAlmostEqual(a, b[0], 4)
+            self.assertEqual(len(b), 1)
+
+            # for aa, bb in zip(a, b):
+            #     self.assertAlmostEqual(aa, bb, 4)
         print(flattened_analytic_jacobian)
 
     def test_jacobian_tiny(self):  # passes
@@ -84,7 +87,7 @@ class TestModel(TestCase):
             model
         )
 
-    def test_jacobian_two_dense(self): # passes
+    def test_jacobian_two_dense(self):  # passes
         image = Image(image_data=[random.randint(0, 255) for _ in range(2)], shape=(1, 2))
         dense_a = Dense(reLU(), (1, 2))
         dense_b = Dense(reLU(), (1, 2))
@@ -128,4 +131,3 @@ class TestModel(TestCase):
         self._rum_derivatives_test(
             model
         )
-
