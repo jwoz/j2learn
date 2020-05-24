@@ -1,13 +1,17 @@
 class LayerBase:
     is_root = False
 
-    def __init__(self, shape, underlying_layer, build, weight):
+    def __init__(self, shape, underlying_layer, build, weight, name):
         self._underlying_layer = underlying_layer
         self._shape = shape
         self._nodes = []
         self._built = False
+        self._name = name
         if build and underlying_layer is not None:
             self.build(init=weight)
+
+    def __str__(self):
+        return self._name
 
     def initialize(self, underlying_layer, build):
         self._underlying_layer = underlying_layer
@@ -57,26 +61,19 @@ class LayerBase:
             partial_derivatives = [node.derivative() for node in self._nodes]
         else:
             partial_derivatives = [node.derivative(f) for f, node in zip(chain_rule_factors, self._nodes)]
-        derivatives.insert(0, partial_derivatives)
+        derivatives.append(partial_derivatives)
         chain_rule_factors = self.chain_rule_factors(chain_rule_factors)
         for factors in chain_rule_factors:
             underlying_derivatives = self._underlying_layer.jacobian(factors)
             if len(underlying_derivatives):
-                derivatives.insert(0, underlying_derivatives)
+                derivatives.append(underlying_derivatives)
         return derivatives
-
-    def jacobian_broken(self, chain_rule_factors=None):
-        if chain_rule_factors is None or not len(chain_rule_factors):
-            partial_derivatives = [node.derivative() for node in self._nodes]
-        else:
-            partial_derivatives = [[node.derivative(f) for f, node in zip(crf, self._nodes)] for crf in chain_rule_factors]
-        return partial_derivatives
 
     def chain_rule_factors(self, chain_rule_factors=None):
         if chain_rule_factors is None or not len(chain_rule_factors):
             factors = [node.chain_rule_factors() for node in self._nodes]
         else:
-            factors = [node.chain_rule_factors(f) for f, node in zip(chain_rule_factors, self._nodes)] # returns 2d array: list of nodes of list of underlying nodes
+            factors = [node.chain_rule_factors(f) for f, node in zip(chain_rule_factors, self._nodes)]  # returns 2d array: list of nodes of list of underlying nodes
         return factors
 
     def display(self, numbers=False, threshold=0.8):

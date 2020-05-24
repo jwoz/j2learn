@@ -4,7 +4,10 @@ from dataclasses import dataclass
 @dataclass
 class DataNode:
     _value: float
-    _derivative: float = 0
+    _name: str = ''
+
+    def __str__(self):
+        return self._name
 
     @staticmethod
     def weight_count():
@@ -13,8 +16,9 @@ class DataNode:
     def value(self):
         return self._value
 
-    def derivative(self):
-        return self._derivative
+    @staticmethod
+    def derivative():
+        return 0
 
 
 class ZeroNode(DataNode):

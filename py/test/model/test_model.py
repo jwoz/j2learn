@@ -58,17 +58,19 @@ class TestModel(TestCase):
             model
         )
 
-    def test_jacobian_small(self):
-        image = [random.randint(0, 255) for _ in range(4)]
-        small_image = Image(image_data=image)
+    def test_jacobian_small(self):  # passes
+        image = Image(image_data=[random.randint(0, 255) for _ in range(4)])
         dense = Dense(reLU(), (2, 1))
         cnn = CNN(reLU(), (1, 2), (0, 0))
-        model = Model(layers=[small_image, cnn, dense])
+        model = Model(layers=[
+            image,
+            cnn,
+            dense])
         self._rum_derivatives_test(
             model
         )
 
-    def test_jacobian_cnn(self):
+    def test_jacobian_cnn(self):  # passes
         image = [random.randint(0, 255) for _ in range(2)]
         image = Image(image_data=image, shape=(1, 2))
         cnn_a = CNN(reLU(), (1, 1), (0, 0))
@@ -82,18 +84,48 @@ class TestModel(TestCase):
             model
         )
 
-    def test_jacobian_medium(self):
-        image = [random.randint(0, 255) for _ in range(9)]
-        image = Image(image_data=image)
-        cnn_a = CNN(reLU(), (3, 3), (0, 0))
-        cnn_b = CNN(reLU(), (3, 3), (0, 0))
-        dense = CNN(reLU(), (1, 1), (0, 0))
+    def test_jacobian_two_dense(self): # passes
+        image = Image(image_data=[random.randint(0, 255) for _ in range(2)], shape=(1, 2))
+        dense_a = Dense(reLU(), (1, 2))
+        dense_b = Dense(reLU(), (1, 2))
         model = Model(layers=[
             image,
-            cnn_a,
-            cnn_b,
-            # dense,
+            dense_a,
+            dense_b,
         ])
         self._rum_derivatives_test(
             model
         )
+
+    def test_jacobian_three_dense(self):  # fails
+        random.seed(42)
+        image = Image(image_data=[random.randint(0, 255) for _ in range(2)], shape=(1, 2))
+        dense_a = Dense(reLU(), (1, 2), name='a')
+        dense_b = Dense(reLU(), (1, 2), name='b')
+        dense_c = Dense(reLU(), (1, 1), name='c')
+        model = Model(layers=[
+            image,
+            dense_a,
+            dense_b,
+            dense_c,
+        ])
+        self._rum_derivatives_test(
+            model
+        )
+
+    def test_jacobian_three_cnn(self):  # fails
+        image = [random.randint(0, 255) for _ in range(2)]
+        image = Image(image_data=image, shape=(1, 2))
+        cnn_a = CNN(reLU(), (1, 2), (0, 0))
+        cnn_b = CNN(reLU(), (1, 2), (0, 0))
+        cnn_c = CNN(reLU(), (1, 1), (0, 0))
+        model = Model(layers=[
+            image,
+            cnn_a,
+            cnn_b,
+            cnn_c,
+        ])
+        self._rum_derivatives_test(
+            model
+        )
+

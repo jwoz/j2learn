@@ -3,9 +3,9 @@ from j2learn.layer.layer import LayerBase
 
 
 class Category(LayerBase):
-    def __init__(self, categories, underlying_layer=None, build=True, weight=None):
+    def __init__(self, categories, underlying_layer=None, build=True, weight=None, name=''):
         self._categories = categories
-        super().__init__((1, 1), underlying_layer, build, weight)
+        super().__init__((1, 1), underlying_layer, build, weight, f'category[{name}]')
         assert underlying_layer is None or len(categories) == self._underlying_layer.shape(0)
         assert underlying_layer is None or self._underlying_layer.shape(1) == 1
 

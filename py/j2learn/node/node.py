@@ -1,9 +1,13 @@
 class Node:
-    def __init__(self, activation, weights, underlying_nodes):
+    def __init__(self, activation, weights, underlying_nodes, name=''):
         self._activation = activation
         self._weights = weights
         self._underlying_nodes = underlying_nodes
+        self._name = name
         assert len(self._weights) == len(self._underlying_nodes)
+
+    def __str__(self):
+        return self._name
 
     def _weighted_sum_underlying(self, normalize=False):
         weighted_sum = sum([w.weight() * u.value() for w, u in zip(self._weights, self._underlying_nodes)])
@@ -33,7 +37,7 @@ class Node:
         weighted_sum = self._weighted_sum_underlying()
         d_activation = self._activation.derivative(weighted_sum)
         for w, u in zip(self._weights, self._underlying_nodes):
-            w.set_derivative(chain_rule_factor*d_activation*u.value())
+            w.set_derivative(chain_rule_factor * d_activation * u.value(), name=f'{self}/{u}')
         return [w.derivative() for w in self._weights]
 
     def chain_rule_factors(self, chain_rule_factor=1):

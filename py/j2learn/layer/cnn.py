@@ -6,11 +6,11 @@ from j2learn.node.weight import Weight
 
 
 class CNN(LayerBase):
-    def __init__(self, activation, kernel, stride=None, underlying_layer=None, build=True, weight=None):
+    def __init__(self, activation, kernel, stride=None, underlying_layer=None, build=True, weight=None, name=''):
         self._activation = activation
         self._kernel = kernel
         self._stride = (0, 0) if stride is None else stride
-        super().__init__(None, underlying_layer, build, weight)
+        super().__init__(None, underlying_layer, build, weight, f'cnn[{name}]')
 
     def build(self, init=None):
         shape = self._underlying_layer.shape()

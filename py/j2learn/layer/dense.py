@@ -6,9 +6,9 @@ from j2learn.node.weight import Weight
 
 
 class Dense(LayerBase):
-    def __init__(self, activation, shape, underlying_layer=None, build=True, weight=None):
+    def __init__(self, activation, shape, underlying_layer=None, build=True, weight=None, name=''):
         self._activation = activation
-        super().__init__(shape, underlying_layer, build, weight)
+        super().__init__(shape, underlying_layer, build, weight, f'dense[{name}]')
 
     def build(self, init=None):
         shape = self._underlying_layer.shape()
@@ -22,5 +22,5 @@ class Dense(LayerBase):
                 nodes.append(node)
                 weights.append(weight)
             weights = [Weight(w / sum(weights)) for w in weights]
-            self._nodes.append(Node(self._activation, weights, nodes))
+            self._nodes.append(Node(self._activation, weights, nodes, name=f'{self._name}_{n}'))
         self._built = True

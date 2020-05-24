@@ -35,10 +35,10 @@ class Image:
     def node(self, i, j=None):
         if j is None:
             assert i < len(self._image_data)
-            return DataNode(self._image_data[i])
+            return DataNode(self._image_data[i], f'Data_{i}')
         assert i * self._shape[1] + j < len(
             self._image_data), f'{i}, {j}: {i * self._shape[1] + j}>{len(self._image_data)}'
-        return DataNode(self._image_data[i * self._shape[1] + j])
+        return DataNode(self._image_data[i * self._shape[1] + j], f'Data_{i * self._shape[1] + j}')
 
     def shape(self):
         return self._shape
