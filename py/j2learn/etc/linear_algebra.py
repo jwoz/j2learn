@@ -1,10 +1,4 @@
 def matrix_product(a, b):
-    try:
-        if len(a[0]) != len(b):
-            print('not equal')
-    except IndexError:
-        raise
-
     assert len(a[0]) == len(b)
     m = []
     for i in range(len(a)):

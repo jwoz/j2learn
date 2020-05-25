@@ -15,8 +15,6 @@ class TestModel(TestCase):
         weight_count = model.weight_count()
         if expected_no_weights is not None:
             self.assertEqual(weight_count, expected_no_weights)
-        # are these weights a weakref???
-        # chain_rule_factors = model.chain_rule_factors()
         analytic_jacobian = model.jacobian()
         flattened_analytic_jacobian = list(flatten(analytic_jacobian))
         if expected_no_partials is not None:
@@ -31,7 +29,7 @@ class TestModel(TestCase):
                 self.assertAlmostEqual(aa, bb, 4)
         print(flattened_analytic_jacobian)
 
-    def test_jacobian_dense_11_cnn_11(self):  # passes
+    def test_jacobian_dense_11_cnn_11(self):
         image = [random.randint(0, 255) for _ in range(1)]
         small_image = Image(image_data=image)
         dense = Dense(reLU(), (1, 1))
@@ -50,7 +48,7 @@ class TestModel(TestCase):
             model
         )
 
-    def test_jacobian_cnn_11(self):  # passes
+    def test_jacobian_cnn_11(self):
         image = [random.randint(0, 255) for _ in range(2)]
         image = Image(image_data=image, shape=(2, 1))
         cnn = CNN(reLU(), (1, 1), (0, 0))
@@ -59,7 +57,7 @@ class TestModel(TestCase):
             model
         )
 
-    def test_jacobian_dense_21_cnn_12(self):  # passes
+    def test_jacobian_dense_21_cnn_12(self):
         image = Image(image_data=[random.randint(0, 255) for _ in range(4)])
         dense = Dense(reLU(), (2, 1))
         cnn = CNN(reLU(), (1, 2), (0, 0))
@@ -71,7 +69,7 @@ class TestModel(TestCase):
             model
         )
 
-    def test_jacobian_cnn_11_11(self):  # passes
+    def test_jacobian_cnn_11_11(self):
         image = [random.randint(0, 255) for _ in range(2)]
         image = Image(image_data=image, shape=(1, 2))
         cnn_a = CNN(reLU(), (1, 1), (0, 0))
@@ -112,7 +110,7 @@ class TestModel(TestCase):
         )
         pass
 
-    def test_jacobian_dense_12_12_11(self):  # fails
+    def test_jacobian_dense_12_12_11(self):
         random.seed(42)
         image = Image(image_data=[random.randint(0, 255) for _ in range(2)], shape=(1, 2))
         dense_a = Dense(reLU(), (1, 2), name='a')
@@ -128,7 +126,7 @@ class TestModel(TestCase):
             model
         )
 
-    def test_jacobian_cnn_12_12_11(self):  # fails
+    def test_jacobian_cnn_12_12_11(self):
         image = [random.randint(0, 255) for _ in range(2)]
         image = Image(image_data=image, shape=(1, 2))
         cnn_a = CNN(reLU(), (1, 2), (0, 0))

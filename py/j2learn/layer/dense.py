@@ -1,10 +1,10 @@
 import random
-
-from j2learn.node.node import Node
-from j2learn.layer.layer import LayerBase
-from j2learn.node.weight import Weight
-from j2learn.etc.linear_algebra import matrix_product
 from itertools import cycle
+
+from j2learn.etc.linear_algebra import matrix_product
+from j2learn.layer.layer import LayerBase
+from j2learn.node.node import Node
+from j2learn.node.weight import Weight
 
 
 class Dense(LayerBase):
