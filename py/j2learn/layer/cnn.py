@@ -11,6 +11,7 @@ class CNN(LayerBase):
         self._kernel = kernel
         self._stride = (0, 0) if stride is None else stride
         super().__init__(None, underlying_layer, build, weight, f'cnn[{name}]')
+        self._chain_rule_factors = None
 
     def build(self, init=None):
         shape = self._underlying_layer.shape()
@@ -34,3 +35,11 @@ class CNN(LayerBase):
                 self._nodes.append(this_cnn_node)
         self._shape = shape
         self._built = True
+
+    def chain_rule_factors(self, chain_rule_factors=None):
+        if chain_rule_factors is None or not len(chain_rule_factors):
+            factors = [node.chain_rule_factors() for node in self._nodes]
+        else:
+            factors = [node.chain_rule_factors(f) for f, node in zip(chain_rule_factors, self._nodes)]  # returns 2d array: list of nodes of list of underlying nodes
+        self._chain_rule_factors = factors
+        return factors

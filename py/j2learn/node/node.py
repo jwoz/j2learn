@@ -4,6 +4,7 @@ class Node:
         self._weights = weights
         self._underlying_nodes = underlying_nodes
         self._name = name
+        self._chain_rule_factors = None
         assert len(self._weights) == len(self._underlying_nodes)
 
     def __str__(self):
@@ -26,25 +27,28 @@ class Node:
         for w, ww in zip(self._weights, weights):
             w.set_weight(ww)
 
+    def set_weight_derivatives(self, derivatives):
+        for w, d in zip(self._weights, derivatives):
+            w.set_derivative(d)
+
     def value(self):
         sum_of_underlying_nodes = self._weighted_sum_underlying()
         return self._activation.value(sum_of_underlying_nodes)
 
-    def derivative(self, chain_rule_factor=1):
+    def derivative(self):
         """
         :return: the Jacobian wrt current weights
         """
         weighted_sum = self._weighted_sum_underlying()
         d_activation = self._activation.derivative(weighted_sum)
-        for w, u in zip(self._weights, self._underlying_nodes):
-            w.set_derivative(chain_rule_factor * d_activation * u.value(), name=f'{self}/{u}')
-        return [w.derivative() for w in self._weights]
+        return [d_activation * u.value() for u in self._underlying_nodes]
 
-    def chain_rule_factors(self, chain_rule_factor=1):
+    def chain_rule_factors(self):
         """
-        :return: the Jacobian wrt current weights
+        :return: chain rule factors of node with respect to underlying weights (aka derivatives wrt underlying nodes)
         """
         weighted_sum = self._weighted_sum_underlying()
         d_activation = self._activation.derivative(weighted_sum)
-        factors = [chain_rule_factor * d_activation * w.weight() for w in self._weights]
+        factors = [d_activation * w.weight() for w in self._weights]
+        self._chain_rule_factors = factors
         return factors

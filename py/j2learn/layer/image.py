@@ -68,8 +68,8 @@ class Image:
         return self._image_data
 
     @staticmethod
-    def chain_rule_factors():
-        return []
+    def chain_rule_factors(upper_layer_factors=None):
+        return upper_layer_factors
 
     @staticmethod
     def jacobian(_=None):

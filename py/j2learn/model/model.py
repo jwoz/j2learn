@@ -68,6 +68,18 @@ class Model:
         return self._layers[-1].probability()
 
     def jacobian(self):
-        layer = self._layers[-1]
-        jacobian = layer.jacobian()
-        return jacobian
+        factors = []
+        jacobians = []
+        for layer in self._layers[::-1]:
+            jacobian = layer.jacobian(factors)
+            jacobians.insert(0, jacobian)
+            factors = layer.chain_rule_factors(factors)
+        return jacobians
+
+    def chain_rule_factors(self):
+        layer_factors = []
+        factors = []
+        for layer in self._layers[::-1]:
+            factors = layer.chain_rule_factors(factors)
+            layer_factors.append(factors)
+        return layer_factors
