@@ -2,7 +2,7 @@ class Weight:
     def __init__(self, weight):
         self._weight = weight
         self.id = id(self)
-        self._derivative = None
+        self._derivatives = []
         self._name = None
 
     def weight(self):
@@ -12,11 +12,10 @@ class Weight:
         self._weight = weight
 
     def derivative(self):
-        return self._derivative
+        return self._derivatives
 
     def set_derivative(self, derivative, name=''):
-        assert self._derivative is None
-        self._derivative = derivative
+        self._derivatives.append(derivative)
         self._name = name
 
 # class Weight:

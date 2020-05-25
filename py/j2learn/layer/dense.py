@@ -4,6 +4,7 @@ from j2learn.node.node import Node
 from j2learn.layer.layer import LayerBase
 from j2learn.node.weight import Weight
 from j2learn.etc.linear_algebra import matrix_product
+from itertools import cycle
 
 
 class Dense(LayerBase):
@@ -38,7 +39,7 @@ class Dense(LayerBase):
                     m.append(r)
             derivatives = m
         self._derivatives = derivatives
-        for ds, ns in zip(derivatives, self._nodes):
+        for ds, ns in zip(derivatives, cycle(self._nodes)):
             ns.set_weight_derivatives(ds)
         return derivatives
 
