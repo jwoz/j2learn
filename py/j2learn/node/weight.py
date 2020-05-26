@@ -17,3 +17,12 @@ class Weight:
     def set_derivative(self, derivative, name=''):
         self._derivatives.append(derivative)
         self._name = name
+
+
+class ZeroWeight:
+    @staticmethod
+    def weight():
+        return 0
+
+    def set_derivative(self, derivative, name=''):
+        pass

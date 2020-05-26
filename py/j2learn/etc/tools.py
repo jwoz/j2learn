@@ -1,5 +1,7 @@
 from collections import Iterable
 
+from j2learn.node.weight import ZeroWeight
+
 
 def flatten(items):
     # also flatten in pandas ... import seems slow
@@ -13,10 +15,12 @@ def flatten(items):
 
 
 def finite_differences(model, probability=True, nonzero=True, epsilon=1e-8):
-    weights = model.weights(flatten=True, reset=True)
+    weights = model.weights()
     p0 = model.probability() if probability else model.value()
     gradients = {}
     for w in weights:
+        if isinstance(w, ZeroWeight):
+            continue
         original = w.weight()
         w.set_weight(original + epsilon)
         p1 = model.probability() if probability else model.value()

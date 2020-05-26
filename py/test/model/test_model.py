@@ -10,7 +10,7 @@ from j2learn.model.model import Model
 
 
 class TestModel(TestCase):
-    def _rum_derivatives_test(self, model, expected_no_weights=None, expected_no_partials=None):
+    def _run_derivatives_test(self, model, expected_no_weights=None, expected_no_partials=None):
         model.compile(build=True)
         weight_count = model.weight_count()
         if expected_no_weights is not None:
@@ -22,7 +22,7 @@ class TestModel(TestCase):
 
         # go through the weights above and bump each. not this arbitrary list.
         bumped_derivatives = finite_differences(model, False)
-        for w in model.weights(flatten=True, reset=False):
+        for w in model.weights():
             a = w.derivative()
             b = bumped_derivatives[w.id]
             for aa, bb in zip(a, b):
@@ -35,7 +35,7 @@ class TestModel(TestCase):
         dense = Dense(reLU(), (1, 1))
         cnn = CNN(reLU(), (1, 1), (0, 0))
         model = Model(layers=[small_image, cnn, dense])
-        self._rum_derivatives_test(
+        self._run_derivatives_test(
             model
         )
 
@@ -44,7 +44,7 @@ class TestModel(TestCase):
         image = Image(image_data=image, shape=(2, 1))
         dense = Dense(reLU(), (1, 1))
         model = Model(layers=[image, dense])
-        self._rum_derivatives_test(
+        self._run_derivatives_test(
             model
         )
 
@@ -53,7 +53,7 @@ class TestModel(TestCase):
         image = Image(image_data=image, shape=(2, 1))
         cnn = CNN(reLU(), (1, 1), (0, 0))
         model = Model(layers=[image, cnn])
-        self._rum_derivatives_test(
+        self._run_derivatives_test(
             model
         )
 
@@ -65,21 +65,21 @@ class TestModel(TestCase):
             image,
             cnn,
             dense])
-        self._rum_derivatives_test(
+        self._run_derivatives_test(
             model
         )
 
     def test_jacobian_cnn_11_11(self):
         image = [random.randint(0, 255) for _ in range(2)]
         image = Image(image_data=image, shape=(1, 2))
-        cnn_a = CNN(reLU(), (1, 1), (0, 0))
-        cnn_b = CNN(reLU(), (1, 1), (0, 0))
+        cnn_a = CNN(reLU(), (1, 1), (0, 0), name='a')
+        cnn_b = CNN(reLU(), (1, 1), (0, 0), name='b')
         model = Model(layers=[
             image,
             cnn_a,
             cnn_b,
         ])
-        self._rum_derivatives_test(
+        self._run_derivatives_test(
             model
         )
 
@@ -92,7 +92,7 @@ class TestModel(TestCase):
             dense_a,
             dense_b,
         ])
-        self._rum_derivatives_test(
+        self._run_derivatives_test(
             model
         )
 
@@ -105,7 +105,7 @@ class TestModel(TestCase):
             dense_a,
             dense_b,
         ])
-        self._rum_derivatives_test(
+        self._run_derivatives_test(
             model
         )
         pass
@@ -122,7 +122,7 @@ class TestModel(TestCase):
             dense_b,
             dense_c,
         ])
-        self._rum_derivatives_test(
+        self._run_derivatives_test(
             model
         )
 
@@ -138,6 +138,6 @@ class TestModel(TestCase):
             cnn_b,
             cnn_c,
         ])
-        self._rum_derivatives_test(
+        self._run_derivatives_test(
             model
         )

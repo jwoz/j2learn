@@ -11,16 +11,16 @@ class DataNode:
 
     @staticmethod
     def weight_count():
-        return 0
+        return 0.0
 
     def value(self):
         return self._value
 
     @staticmethod
     def derivative():
-        return 0
+        return 0.0
 
 
 class ZeroNode(DataNode):
     def __init__(self):
-        super().__init__(0)
+        super().__init__(0.0)

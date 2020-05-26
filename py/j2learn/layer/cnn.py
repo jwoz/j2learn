@@ -1,8 +1,12 @@
+import numpy as np
 import random
+from itertools import cycle
 
+from j2learn.etc.linear_algebra import matrix_product
 from j2learn.layer.layer import LayerBase
+from j2learn.node.data import ZeroNode
 from j2learn.node.node import Node
-from j2learn.node.weight import Weight
+from j2learn.node.weight import Weight, ZeroWeight
 
 
 class CNN(LayerBase):
@@ -11,35 +15,69 @@ class CNN(LayerBase):
         self._kernel = kernel
         self._stride = (0, 0) if stride is None else stride
         super().__init__(None, underlying_layer, build, weight, f'cnn[{name}]')
-        self._chain_rule_factors = None
 
     def build(self, init=None):
         shape = self._underlying_layer.shape()
         self._nodes = []
-        for nx in range(shape[0]):
+        for nx in range(shape[0]):  # counter in x for this layer
             for ny in range(shape[1]):
                 nodes = []
                 weights = []
                 # collect nodes according to kernel and stride
+                indices = []
                 for k in range(self._kernel[0]):
                     for l in range(self._kernel[1]):
                         kk = nx - self._kernel[0] // 2 + k + k * self._stride[0]
                         ll = ny - self._kernel[1] // 2 + l + l * self._stride[1]
-                        if not (kk < 0 or ll < 0 or kk >= shape[0] or ll >= shape[1]):
-                            node = self._underlying_layer.node(kk, ll)
+                        if 0 <= kk < shape[0] and 0 <= ll < shape[1]:
+                            indices.append((kk, ll))
+                for k in range(shape[0]):
+                    for l in range(shape[1]):
+                        if (k, l) in indices:
+                            node = self._underlying_layer.node(k, l)
                             weight = random.random() if init is None else init
                             nodes.append(node)
                             weights.append(weight)
-                weights = [Weight(w / sum(weights)) for w in weights]
+                        else:
+                            nodes.append(ZeroNode())
+                            weights.append(0.0)
+                weights = [Weight(w / sum(weights)) if w > 0 else ZeroWeight() for w in weights]
                 this_cnn_node = Node(self._activation, weights, nodes)
                 self._nodes.append(this_cnn_node)
         self._shape = shape
         self._built = True
 
-    def chain_rule_factors(self, chain_rule_factors=None):
-        if chain_rule_factors is None or not len(chain_rule_factors):
-            factors = [node.chain_rule_factors() for node in self._nodes]
-        else:
-            factors = [node.chain_rule_factors(f) for f, node in zip(chain_rule_factors, self._nodes)]  # returns 2d array: list of nodes of list of underlying nodes
+    def jacobian(self, upper_layer_factors=None):
+        if len(self._derivatives):
+            return self._derivatives
+        derivatives = [node.derivative() for node in self._nodes]
+        if upper_layer_factors is not None and len(upper_layer_factors):
+            m = []
+            for f in upper_layer_factors:
+                for ff, d in zip(f, derivatives):
+                    r = []
+                    for dd in d:
+                        if np.isnan(dd):
+                            continue
+                        r.append(dd * ff)
+                    m.append(r)
+            derivatives = m
+            # # hmmm...
+            # for i, n in enumerate(self._nodes):
+            #     for j, u in enumerate(n._underlying_nodes):
+            #         if isinstance(u, ZeroNode):
+            #             assert derivatives[i][j] == 0
+            #             del derivatives[i][j]
+        self._derivatives = derivatives
+        for ds, ns in zip(derivatives, cycle(self._nodes)):
+            ns.set_weight_derivatives(ds)
+        return derivatives
+
+    def chain_rule_factors(self, upper_layer_factors=None):
+        if len(self._chain_rule_factors):
+            return self._chain_rule_factors
+        factors = [node.chain_rule_factors() for node in self._nodes]
+        if upper_layer_factors is not None and len(upper_layer_factors):
+            factors = matrix_product(upper_layer_factors, factors)
         self._chain_rule_factors = factors
         return factors

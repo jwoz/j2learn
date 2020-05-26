@@ -1,3 +1,8 @@
+import numpy as np
+
+from j2learn.node.data import ZeroNode
+
+
 class Node:
     def __init__(self, activation, weights, underlying_nodes, name=''):
         self._activation = activation
@@ -41,7 +46,7 @@ class Node:
         """
         weighted_sum = self._weighted_sum_underlying()
         d_activation = self._activation.derivative(weighted_sum)
-        return [d_activation * u.value() for u in self._underlying_nodes]
+        return [(d_activation * u.value() if not isinstance(u, ZeroNode) else np.nan) for u in self._underlying_nodes]
 
     def chain_rule_factors(self):
         """
