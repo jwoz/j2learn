@@ -1,6 +1,7 @@
-import numpy as np
 import random
 from itertools import cycle
+
+import numpy as np
 
 from j2learn.etc.linear_algebra import matrix_product
 from j2learn.layer.layer import LayerBase
@@ -17,12 +18,15 @@ class CNN(LayerBase):
         super().__init__(None, underlying_layer, build, weight, f'cnn[{name}]')
 
     def build(self, init=None):
+        if self._built:
+            raise AttributeError('Layer already built.')
         shape = self._underlying_layer.shape()
         self._nodes = []
         for nx in range(shape[0]):  # counter in x for this layer
             for ny in range(shape[1]):
                 nodes = []
                 weights = []
+                weights_sum = 0
                 # collect nodes according to kernel and stride
                 indices = []
                 for k in range(self._kernel[0]):
@@ -38,11 +42,13 @@ class CNN(LayerBase):
                             weight = random.random() if init is None else init
                             nodes.append(node)
                             weights.append(weight)
+                            weights_sum += weight
                         else:
                             nodes.append(ZeroNode())
-                            weights.append(0.0)
-                weights = [Weight(w / sum(weights)) if w > 0 else ZeroWeight() for w in weights]
-                this_cnn_node = Node(self._activation, weights, nodes)
+                            weights.append(np.nan)
+                weights = [Weight(w / weights_sum, name=f'{self._name} [{nx},{ny}]: {m}') if not np.isnan(w) else ZeroWeight() for m, w in enumerate(weights)]
+                print(f'Building {self._name} [{nx}, {ny}]')
+                this_cnn_node = Node(self._activation, weights, nodes, name=f'{self._name} [{nx},{ny}]')
                 self._nodes.append(this_cnn_node)
         self._shape = shape
         self._built = True
@@ -57,7 +63,7 @@ class CNN(LayerBase):
                 for ff, d in zip(f, derivatives):
                     r = []
                     for dd in d:
-                        if np.isnan(dd):
+                        if np.isnan(dd * ff):
                             continue
                         r.append(dd * ff)
                     m.append(r)
@@ -78,6 +84,6 @@ class CNN(LayerBase):
             return self._chain_rule_factors
         factors = [node.chain_rule_factors() for node in self._nodes]
         if upper_layer_factors is not None and len(upper_layer_factors):
-            factors = matrix_product(upper_layer_factors, factors)
+            factors = matrix_product(upper_layer_factors, factors, skip_nan=False)
         self._chain_rule_factors = factors
         return factors

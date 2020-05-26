@@ -22,12 +22,19 @@ class TestModel(TestCase):
 
         # go through the weights above and bump each. not this arbitrary list.
         bumped_derivatives = finite_differences(model, False)
-        for w in model.weights():
+        model_weights = model.weights()
+        for m in model_weights:
+            print(f'{m}, {m.id}: {m.derivative()} vs {bumped_derivatives[m.id]}')
+        for w in model_weights:
             a = w.derivative()
             b = bumped_derivatives[w.id]
+            # if the last layer has more than one node, the bumping will produce zeros that are not in the analytic derivatives. Eliminate:
+            if len(a) < len(b):
+                b = [bb for bb in b if bb != 0]
             for aa, bb in zip(a, b):
                 self.assertAlmostEqual(aa, bb, 4)
         print(flattened_analytic_jacobian)
+        return model_weights
 
     def test_jacobian_dense_11_cnn_11(self):
         image = [random.randint(0, 255) for _ in range(1)]
@@ -129,14 +136,50 @@ class TestModel(TestCase):
     def test_jacobian_cnn_12_12_11(self):
         image = [random.randint(0, 255) for _ in range(2)]
         image = Image(image_data=image, shape=(1, 2))
-        cnn_a = CNN(reLU(), (1, 2), (0, 0))
-        cnn_b = CNN(reLU(), (1, 2), (0, 0))
-        cnn_c = CNN(reLU(), (1, 1), (0, 0))
+        cnn_a = CNN(reLU(), (1, 2), (0, 0), name='a')
+        cnn_b = CNN(reLU(), (1, 2), (0, 0), name='b')
+        cnn_c = CNN(reLU(), (1, 1), (0, 0), name='c')
         model = Model(layers=[
             image,
             cnn_a,
             cnn_b,
             cnn_c,
+        ])
+        self._run_derivatives_test(
+            model
+        )
+
+    def test_jacobian_cnn_31(self):
+        image = [random.randint(0, 255) for _ in range(3)]
+        model = Model(layers=[
+            Image(image_data=image, shape=(3, 1)),
+            CNN(reLU(), (3, 1), (0, 0), name='a'),
+        ])
+        weights = self._run_derivatives_test(model)
+        self.assertEqual(len(weights), 7)
+
+    def test_jacobian_cnn_31_dense_11(self):
+        image = [random.randint(0, 255) for _ in range(3)]
+        model = Model(layers=[
+            Image(image_data=image, shape=(3, 1)),
+            CNN(reLU(), (3, 1), name='a'),
+            Dense(reLU(), (1, 1), name='d'),
+        ])
+        self._run_derivatives_test(model)
+
+    def test_jacobian_cnn_33_33_33_dense_31(self):
+        image = [random.randint(0, 255) for _ in range(16)]
+        image = Image(image_data=image)
+        cnn_a = CNN(reLU(), (3, 3), (0, 0), name='a')
+        cnn_b = CNN(reLU(), (3, 3), (0, 0), name='b')
+        cnn_c = CNN(reLU(), (3, 3), (0, 0), name='c')
+        dense = Dense(reLU(), (3, 1), name='d')
+        model = Model(layers=[
+            image,
+            cnn_a,
+            cnn_b,
+            cnn_c,
+            dense,
         ])
         self._run_derivatives_test(
             model

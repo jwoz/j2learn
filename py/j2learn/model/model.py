@@ -17,9 +17,7 @@ class Model:
                 layer.initialize(underlying_layer, build)
             underlying_layer = layer
         self._compiled = True
-        self._built = False
-        if build:
-            self.build()
+        self._built = build
 
     def build(self):
         assert self._compiled, 'Model must be compiled first.'
