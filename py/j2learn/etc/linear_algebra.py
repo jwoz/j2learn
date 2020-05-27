@@ -1,6 +1,13 @@
 import numpy as np
 
-def matrix_product(a, b, skip_nan=False):
+
+def matrix_product(a, b):
+    ma = np.array(a)
+    mb = np.array(b)
+    return np.matmul(ma, mb)
+
+
+def matrix_product_pure(a, b):
     assert len(a[0]) == len(b)
     m = []
     for i in range(len(a)):
@@ -9,8 +16,6 @@ def matrix_product(a, b, skip_nan=False):
             this_sum = 0
             for j in range(len(a[0])):
                 s = a[i][j] * b[j][k]
-                if skip_nan and np.isnan(s):
-                    continue
                 this_sum += s
             r.append(this_sum)
         m.append(r)
