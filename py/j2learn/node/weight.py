@@ -1,5 +1,3 @@
-import numpy as np
-
 class Weight:
     def __init__(self, weight, name=''):
         self._weight = weight
@@ -28,7 +26,7 @@ class Weight:
 class ZeroWeight:
     @staticmethod
     def weight():
-        return 0 # np.nan
+        return 0
 
     def set_derivative(self, derivative, name=''):
         pass

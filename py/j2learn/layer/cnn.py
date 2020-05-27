@@ -22,12 +22,12 @@ class CNN(LayerBase):
             raise AttributeError('Layer already built.')
         shape = self._underlying_layer.shape()
         self._nodes = []
-        for nx in range(shape[0]):  # counter in x for this layer
+        for nx in range(shape[0]):
             for ny in range(shape[1]):
                 nodes = []
                 weights = []
                 weights_sum = 0
-                # collect nodes according to kernel and stride
+                # collect indices according to kernel and stride
                 indices = []
                 for k in range(self._kernel[0]):
                     for l in range(self._kernel[1]):
@@ -63,17 +63,9 @@ class CNN(LayerBase):
                 for ff, d in zip(f, derivatives):
                     r = []
                     for dd in d:
-                        # if np.isnan(dd * ff):
-                        #     continue
                         r.append(dd * ff)
                     m.append(r)
             derivatives = m
-            # # hmmm...
-            # for i, n in enumerate(self._nodes):
-            #     for j, u in enumerate(n._underlying_nodes):
-            #         if isinstance(u, ZeroNode):
-            #             assert derivatives[i][j] == 0
-            #             del derivatives[i][j]
         self._derivatives = derivatives
         for ds, ns in zip(derivatives, cycle(self._nodes)):
             ns.set_weight_derivatives(ds)

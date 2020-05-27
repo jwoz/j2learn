@@ -34,7 +34,6 @@ class Node:
             w.set_weight(ww)
 
     def set_weight_derivatives(self, derivatives):
-        # for w, d in zip([w for w in self._weights if not isinstance(w, ZeroWeight)], derivatives):
         for w, d in zip(self._weights, derivatives):
             w.set_derivative(d)
 
