@@ -63,8 +63,8 @@ class CNN(LayerBase):
                 for ff, d in zip(f, derivatives):
                     r = []
                     for dd in d:
-                        if np.isnan(dd * ff):
-                            continue
+                        # if np.isnan(dd * ff):
+                        #     continue
                         r.append(dd * ff)
                     m.append(r)
             derivatives = m

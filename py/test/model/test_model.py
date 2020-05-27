@@ -159,6 +159,7 @@ class TestModel(TestCase):
         self.assertEqual(len(weights), 7)
 
     def test_jacobian_cnn_31_dense_11(self):
+        random.seed(44009)
         image = [random.randint(0, 255) for _ in range(3)]
         model = Model(layers=[
             Image(image_data=image, shape=(3, 1)),
