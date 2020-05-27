@@ -1,7 +1,6 @@
 import numpy as np
 
 from j2learn.node.data import ZeroNode
-from j2learn.node.weight import ZeroWeight
 
 
 class Node:
