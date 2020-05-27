@@ -1,4 +1,5 @@
 from collections import Iterable
+from timeit import default_timer
 
 from j2learn.node.weight import ZeroWeight
 
@@ -18,7 +19,20 @@ def finite_differences(model, probability=True, nonzero=True, epsilon=1e-8):
     weights = model.weights()
     p0 = model.probability() if probability else model.value()
     gradients = {}
-    for w in weights:
+    n = len(weights)
+    j = 0
+    t0 = default_timer()
+    for i, w in enumerate(weights):
+        if i % 100 == 0:
+            if i > 0:
+                dt = default_timer() - t0
+                j += i + 1
+                tt = dt / i * n
+                print(f' {dt / 60:6.2f}/{tt / 60:6.2f} min')
+            print(f'{i}/{n} ', end='', flush=True)
+        elif i % 10 == 0:
+            print('+', end='', flush=True)
+
         if isinstance(w, ZeroWeight):
             continue
         original = w.weight()
@@ -29,4 +43,5 @@ def finite_differences(model, probability=True, nonzero=True, epsilon=1e-8):
             gradient = [g for g in gradient]
         gradients[w.id] = gradient
         w.set_weight(original)
+
     return gradients

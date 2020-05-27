@@ -1,4 +1,5 @@
 import random
+from timeit import default_timer
 from unittest import TestCase
 
 from j2learn.etc.tools import flatten, finite_differences
@@ -7,7 +8,6 @@ from j2learn.layer.cnn import CNN
 from j2learn.layer.dense import Dense
 from j2learn.layer.image import Image
 from j2learn.model.model import Model
-from timeit import default_timer
 
 
 class TestModel(TestCase):
@@ -18,7 +18,7 @@ class TestModel(TestCase):
             self.assertEqual(weight_count, expected_no_weights)
         t0 = default_timer()
         analytic_jacobian = model.jacobian()
-        print(f'Analaytics jacobian: {default_timer()-t0}')
+        print(f'Analytic jacobian: {default_timer() - t0}')
         flattened_analytic_jacobian = list(flatten(analytic_jacobian))
         if expected_no_partials is not None:
             self.assertEqual(len(flattened_analytic_jacobian), expected_no_partials)
@@ -26,7 +26,7 @@ class TestModel(TestCase):
         # go through the weights above and bump each. not this arbitrary list.
         t0 = default_timer()
         bumped_derivatives = finite_differences(model, False)
-        print(f'Bumped jacobian:     {default_timer()-t0}')
+        print(f'Bumped jacobian:     {default_timer() - t0}')
         model_weights = model.weights()
         for m in model_weights:
             print(f'{m}, {m.id}: {m.derivative()} vs {bumped_derivatives[m.id]}')
@@ -192,7 +192,7 @@ class TestModel(TestCase):
         )
 
     def test_jacobian_cnn_33_33_33_dense_11(self):
-        image = [random.randint(0, 255) for _ in range(784)]
+        image = [random.randint(0, 255) for _ in range(100)]
         image = Image(image_data=image)
         cnn_a = CNN(reLU(), (3, 3), name='a')
         cnn_b = CNN(reLU(), (3, 3), name='b')

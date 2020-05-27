@@ -84,6 +84,6 @@ class CNN(LayerBase):
             return self._chain_rule_factors
         factors = [node.chain_rule_factors() for node in self._nodes]
         if upper_layer_factors is not None and len(upper_layer_factors):
-            factors = matrix_product(upper_layer_factors, factors, skip_nan=False)
+            factors = matrix_product(upper_layer_factors, factors)
         self._chain_rule_factors = factors
         return factors
