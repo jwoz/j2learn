@@ -9,6 +9,7 @@ class Model:
         self._weights = []
         self._compiled = False
         self._built = False
+        self._node_value_cache = {}
 
     def compile(self, build=False):
         underlying_layer = None
@@ -48,26 +49,30 @@ class Model:
 
     def value(self):
         assert self._built, 'The model has not been built, cannot predict'
-        return self._layers[-1].value()
+        return self._layers[-1].value(self._node_value_cache)
 
     def probability(self):
         assert self._built, 'The model has not been built, cannot predict'
         assert hasattr(self._layers[-1], 'probability'), 'Final layer does not have a probability method.'
         return self._layers[-1].probability()
 
+    def set_weight(self, weight, value):
+        self._node_value_cache = {}
+        weight.set_weight(value)
+
     def jacobian(self):
         factors = []
         jacobians = []
         for layer in self._layers[::-1]:
-            jacobian = layer.jacobian(factors)
+            jacobian = layer.jacobian(factors, self._node_value_cache)
             jacobians.insert(0, jacobian)
-            factors = layer.chain_rule_factors(factors)
+            factors = layer.chain_rule_factors(factors, self._node_value_cache)
         return jacobians
 
     def chain_rule_factors(self):
         layer_factors = []
         factors = []
         for layer in self._layers[::-1]:
-            factors = layer.chain_rule_factors(factors)
+            factors = layer.chain_rule_factors(factors, self._node_value_cache)
             layer_factors.append(factors)
         return layer_factors

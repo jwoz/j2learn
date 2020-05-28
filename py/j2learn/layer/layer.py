@@ -59,13 +59,13 @@ class LayerBase:
     def weights(self):
         return [node.weights() for node in self._nodes]
 
-    def value(self):
-        return [node.value() for node in self._nodes]
+    def value(self, cache=None):
+        return [node.value(cache) for node in self._nodes]
 
-    def jacobian(self, upper_layer_factors=None):
+    def jacobian(self, upper_layer_factors=None, cache=None):
         if len(self._derivatives):
             return self._derivatives
-        derivatives = [node.derivative() for node in self._nodes]
+        derivatives = [node.derivative(cache) for node in self._nodes]
         if upper_layer_factors is not None and len(upper_layer_factors):
             m = []
             for f in upper_layer_factors:
@@ -80,10 +80,10 @@ class LayerBase:
             ns.set_weight_derivatives(ds)
         return derivatives
 
-    def chain_rule_factors(self, upper_layer_factors=None):
+    def chain_rule_factors(self, upper_layer_factors=None, cache=None):
         if len(self._chain_rule_factors):
             return self._chain_rule_factors
-        factors = [node.chain_rule_factors() for node in self._nodes]
+        factors = [node.chain_rule_factors(cache) for node in self._nodes]
         if upper_layer_factors is not None and len(upper_layer_factors):
             factors = matrix_product(upper_layer_factors, factors)
         self._chain_rule_factors = factors

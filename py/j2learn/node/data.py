@@ -13,7 +13,7 @@ class DataNode:
     def weight_count():
         return 0.0
 
-    def value(self):
+    def value(self, cache=None):
         return self._value
 
     @staticmethod

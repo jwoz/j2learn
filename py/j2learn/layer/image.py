@@ -64,13 +64,13 @@ class Image:
     def weights():
         return []
 
-    def value(self):
+    def value(self, cache=None):
         return self._image_data
 
     @staticmethod
-    def chain_rule_factors(upper_layer_factors=None):
+    def chain_rule_factors(upper_layer_factors=None, cache=None):
         return upper_layer_factors
 
     @staticmethod
-    def jacobian(_=None):
+    def jacobian(factors=None, cache=None):
         return []
