@@ -192,7 +192,7 @@ class TestModel(TestCase):
         )
 
     def test_jacobian_cnn_33_33_33_dense_11(self):
-        image = [random.randint(0, 255) for _ in range(100)]
+        image = [random.randint(0, 255) for _ in range(784)]
         image = Image(image_data=image)
         cnn_a = CNN(reLU(), (3, 3), name='a')
         cnn_b = CNN(reLU(), (3, 3), name='b')

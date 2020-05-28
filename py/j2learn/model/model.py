@@ -26,6 +26,10 @@ class Model:
             layer.build()
         self._built = True
 
+    def update_data_layer(self, data, label=None):
+        self._layers[0].set_image_data_and_label(data, label)
+        self._node_value_cache = {}
+
     def weight_count(self):
         if not len(self._weights):
             self.weights()

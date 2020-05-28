@@ -16,6 +16,9 @@ class DataNode:
     def value(self, cache=None):
         return self._value
 
+    def set_value(self, value):
+        self._value = value
+
     @staticmethod
     def derivative():
         return 0.0
