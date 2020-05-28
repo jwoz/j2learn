@@ -1,2 +1,3 @@
 # j2learn
-Educational content for machine learning
+A machine learning library built mostly using pure python for the education purposes. 
+Performance was not the primary concern at this time.
