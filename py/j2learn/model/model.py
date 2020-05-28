@@ -44,8 +44,9 @@ class Model:
                 continue
             layer_weights = flatten_list(layer.weights())
             weights.append([w for w in layer_weights if not isinstance(w, ZeroWeight)])
+        weights = list(flatten_list(weights))
         self._weights = weights
-        return list(flatten_list(weights))
+        return weights
 
     def predict(self):
         assert self._built, 'The model has not been built, cannot predict'

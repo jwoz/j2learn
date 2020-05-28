@@ -1,7 +1,8 @@
-import numpy as np
 import random
 from timeit import default_timer
 from unittest import TestCase
+
+import numpy as np
 
 from j2learn.etc.tools import flatten, finite_differences
 from j2learn.function.function import reLU
@@ -214,11 +215,36 @@ class TestModel(TestCase):
         categories = [1, 2, 4]
         model = Model(layers=[
             Image(image_data=image_data, shape=(3, 1), maximum=1),
-            Category([1, 2, 3]),
+            Category(categories),
         ])
         model.compile(build=True)
         v = model.value()
         self.assertEqual(v, [max(image_data)])
         p = model.predict()
         self.assertEqual(p, [categories[int(np.argmax(np.array(image_data)))]])
+        pass
+
+    def test_jacobian_dense_31_category_3(self):
+        image_data = [0.2, 0.5, 0.3]
+        categories = [1, 2, 4]
+        model = Model(layers=[
+            Image(image_data=image_data, shape=(3, 1), maximum=1),
+            Dense(reLU(), (3, 1)),
+            Category(categories),
+        ])
+        self._run_derivatives_test(model)
+        # model.compile(build=True)
+        v = model.value()
+
+        # compute value manually for this image_data:
+        manual_dense_layer = []
+        for i in range(3):
+            weights = model._layers[1]._nodes[i]._weights
+            manual_dense_layer.append(sum([w.weight() * d for w, d in zip(weights, image_data)]))
+        max_value = max(manual_dense_layer)
+        imax_value = int(np.argmax(np.array(manual_dense_layer)))
+        self.assertEqual(v, [max_value])
+
+        p = model.predict()
+        self.assertEqual(p, [categories[imax_value]])
         pass

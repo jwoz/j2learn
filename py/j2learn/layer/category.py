@@ -1,5 +1,5 @@
-from j2learn.node.maximum import MaximumNode
 from j2learn.layer.layer import LayerBase
+from j2learn.node.maximum import MaximumNode
 
 
 class Category(LayerBase):
@@ -29,3 +29,11 @@ class Category(LayerBase):
 
     def predict(self, cache=None):
         return self._nodes[0].predict(cache)
+
+    def chain_rule_factors(self, upper_layer_factors=None, cache=None):
+        """
+        For the chain rule factors, it is assumed that the maximum node is substantially larger than the others.
+        Ie. derivatives of the lower layers are zero except wrt to the node with max value.
+        """
+        i = self._nodes[0].node_index(cache)
+        return [[(1 if j == i else 0) for j in range(self._underlying_layer.node_count())]]

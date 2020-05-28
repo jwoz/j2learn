@@ -14,13 +14,15 @@ class MaximumNode:
     def weights():
         return []
 
-    def predict(self, cache=None):
+    def node_index(self, cache=None):
         if self in cache:
             return cache[self]
         values = [node.value(cache) for node in self._underlying_nodes]
         i = int(np.argmax(np.array(values)))
-        if values[i] == 0:
-            return -1
+        return i
+
+    def predict(self, cache=None):
+        i = self.node_index(cache)
         return [self._categories[i]]
 
     def value(self, cache=None):

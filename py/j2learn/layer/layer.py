@@ -37,6 +37,9 @@ class LayerBase:
             n += len(node.weights())
         return n
 
+    def node_count(self):
+        return len(self._nodes)
+
     def node(self, i, j=None):
         if j is None:
             return self._nodes[i]
