@@ -18,12 +18,14 @@ class Category(LayerBase):
         self._nodes = [MaximumNode(self._categories, [self._underlying_layer.node(i) for i in range(len(self._categories))])]
         self._built = True
 
-    @staticmethod
-    def set_weights(weights):
+    def set_weights(self, weights):
         pass
 
     def weights(self):
         return []
 
-    def probability(self):
-        return self._nodes[0].probability()
+    def value(self, cache=None):
+        return self._nodes[0].value(cache)
+
+    def predict(self, cache=None):
+        return self._nodes[0].predict(cache)

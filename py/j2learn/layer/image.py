@@ -16,11 +16,11 @@ class Image:
         self._shape = shape
         self._maximum = maximum
         image_data = [0] * shape[1] * shape[0] if image_data is None else [i / maximum for i in image_data]
-        self._nodes = [DataNode(i,  f'Data_{j}') for j, i in enumerate(image_data)]
+        self._nodes = [DataNode(i, f'Data_{j}') for j, i in enumerate(image_data)]
 
-    def set_image_data_and_label(self, image_data, label=None):
+    def set_image_data_and_label(self, image_data, label=None, maximum=256):
         for n, i in zip(self._nodes, image_data):
-            n.set_value(i)
+            n.set_value(i / maximum)
         self._label = label
 
     @staticmethod
@@ -41,8 +41,11 @@ class Image:
         assert i * self._shape[1] + j < len(self._nodes), f'{i}, {j}: {i * self._shape[1] + j}>{len(self._nodes)}'
         return self._nodes[i * self._shape[1] + j]
 
-    def shape(self):
-        return self._shape
+    def shape(self, dimension=None):
+        if dimension is None:
+            return self._shape
+        assert dimension < len(self._shape)
+        return self._shape[dimension]
 
     def display(self, numbers=False, threshold=0.8):
         render = ''

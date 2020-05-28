@@ -15,7 +15,7 @@ def flatten(items):
             yield x
 
 
-def finite_differences(model, probability=True, nonzero=True, epsilon=1e-8):
+def finite_differences(model, probability=True, nonzero=True, epsilon=1e-8, nmax=0):
     weights = model.weights()
     p0 = model.probability() if probability else model.value()
     gradients = {}
@@ -23,6 +23,8 @@ def finite_differences(model, probability=True, nonzero=True, epsilon=1e-8):
     j = 0
     t0 = default_timer()
     for i, w in enumerate(weights):
+        if 0 < nmax < i:
+            break
         if i % 100 == 0:
             if i > 0:
                 dt = default_timer() - t0
@@ -36,7 +38,7 @@ def finite_differences(model, probability=True, nonzero=True, epsilon=1e-8):
         if isinstance(w, ZeroWeight):
             continue
         original = w.weight()
-        model.set_weight(w, original+epsilon)
+        model.set_weight(w, original + epsilon)
         p1 = model.probability() if probability else model.value()
         gradient = [(pp1 - pp0) / epsilon for pp0, pp1 in zip(p0, p1)]
         if nonzero:

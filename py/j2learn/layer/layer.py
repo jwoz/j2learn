@@ -59,6 +59,9 @@ class LayerBase:
     def weights(self):
         return [node.weights() for node in self._nodes]
 
+    def predict(self, cache=None):
+        return self.value(cache)
+
     def value(self, cache=None):
         return [node.value(cache) for node in self._nodes]
 

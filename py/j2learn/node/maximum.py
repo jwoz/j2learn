@@ -14,27 +14,28 @@ class MaximumNode:
     def weights():
         return []
 
-    def value(self):
-        values = [node.value() for node in self._underlying_nodes]
+    def predict(self, cache=None):
+        if self in cache:
+            return cache[self]
+        values = [node.value(cache) for node in self._underlying_nodes]
         i = int(np.argmax(np.array(values)))
         if values[i] == 0:
             return -1
-        return self._categories[i]
+        return [self._categories[i]]
 
-    @staticmethod
-    def derivative():
-        return 0
+    def value(self, cache=None):
+        p = max([node.value(cache) for node in self._underlying_nodes])
+        return [p]
 
-    def probability(self):
-        p = max([node.value() for node in self._underlying_nodes])
-        return p
-
-    def derivative_probability(self):
+    def derivative(self, cache=None):
         """
         calculate wrt to largest value, but that's not strictly the whole truth.
         Need to track which weights derivative come into play.
         """
-        values = [node.value() for node in self._underlying_nodes]
+        values = [node.value(cache) for node in self._underlying_nodes]
         i = np.argmax(np.array(values))
-        jacobian = self._underlying_nodes(i).derivative()
+        jacobian = self._underlying_nodes[i].derivative(cache)
         return jacobian
+
+    def set_weight_derivatives(self, derivatives):
+        pass

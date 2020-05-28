@@ -49,7 +49,7 @@ class Model:
 
     def predict(self):
         assert self._built, 'The model has not been built, cannot predict'
-        return self._layers[-1].value()
+        return self._layers[-1].predict(self._node_value_cache)
 
     def value(self):
         assert self._built, 'The model has not been built, cannot predict'
@@ -58,7 +58,7 @@ class Model:
     def probability(self):
         assert self._built, 'The model has not been built, cannot predict'
         assert hasattr(self._layers[-1], 'probability'), 'Final layer does not have a probability method.'
-        return self._layers[-1].probability()
+        return self._layers[-1].probability(self._node_value_cache)
 
     def set_weight(self, weight, value):
         self._node_value_cache = {}
