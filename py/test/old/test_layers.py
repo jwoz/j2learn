@@ -5,7 +5,7 @@ from j2learn.layer.cnn import CNN
 from j2learn.layer.dense import Dense
 from j2learn.layer.image import Image
 
-mndata = MNISTData(path='C:/Users/juergen/Dropbox/data/mnist')
+mndata = MNISTData(path='../mnist')
 
 images, labels = mndata.training()
 

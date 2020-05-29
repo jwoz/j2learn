@@ -7,7 +7,7 @@ from j2learn.layer.image import Image
 from j2learn.model.model import Model
 from j2learn.etc.tools import finite_difference
 
-mndata = MNISTData(path='C:/Users/juergen/Dropbox/data/mnist')
+mndata = MNISTData(path='../mnist')
 
 images, labels = mndata.training()
 
