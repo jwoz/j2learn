@@ -14,6 +14,7 @@ class reLU:
             return 0
         if z > 0:
             return 1
+        print('reLU: derivative is nan at z=0')
         return np.nan
 
 
