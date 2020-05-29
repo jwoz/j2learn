@@ -35,4 +35,5 @@ class GradientDescent:
             for w in weights:
                 derivative = w.derivative()
                 assert len(derivative) == 1, 'SGD for 1D derivatives only (ie. one dim model prediction)'
-                self._model.set_weight(w, w.weight() - self._learning_rate * chain_rule_factor * w.derivative()[0])
+                delta = self._learning_rate * chain_rule_factor * w.derivative()[0]
+                self._model.set_weight(w, w.weight() - delta)
