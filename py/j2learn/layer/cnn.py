@@ -9,7 +9,7 @@ from j2learn.node.weight import Weight, ZeroWeight
 
 
 class CNN(LayerBase):
-    def __init__(self, activation, kernel, stride=None, underlying_layer=None, build=True, weight=None, name=''):
+    def __init__(self, activation, kernel: tuple, stride: (tuple, None) = None, underlying_layer=None, build=True, weight=None, name=''):
         self._activation = activation
         self._kernel = kernel
         self._stride = (0, 0) if stride is None else stride

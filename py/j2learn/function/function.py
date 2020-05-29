@@ -3,6 +3,16 @@ import math
 import numpy as np
 
 
+class identity:
+    @staticmethod
+    def value(z):
+        return z
+
+    @staticmethod
+    def derivative(z):
+        return 1
+
+
 class reLU:
     @staticmethod
     def value(z):

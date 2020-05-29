@@ -233,7 +233,6 @@ class TestModel(TestCase):
             Category(categories),
         ])
         self._run_derivatives_test(model)
-        # model.compile(build=True)
         v = model.value()
 
         # compute value manually for this image_data:

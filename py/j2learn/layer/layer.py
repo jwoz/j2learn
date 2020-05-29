@@ -6,7 +6,7 @@ from j2learn.etc.linear_algebra import matrix_product
 class LayerBase:
     is_root = False
 
-    def __init__(self, shape, underlying_layer, build, weight, name):
+    def __init__(self, shape: (tuple, None), underlying_layer, build: bool, weight: (float, None), name: str):
         self._underlying_layer = underlying_layer
         self._shape = shape
         self._nodes = []
@@ -45,6 +45,9 @@ class LayerBase:
             return self._nodes[i]
         assert i * self._shape[1] + j < len(self._nodes), f'{i}, {j}, {self._shape}: {i * self._shape[1] + j} < {len(self._nodes)}'
         return self._nodes[i * self._shape[1] + j]
+
+    def nodes(self):
+        return self._nodes
 
     def shape(self, dimension=None):
         if dimension is None:
