@@ -19,9 +19,9 @@ class GradientDescent:
                 if i > 0:
                     dt = default_timer() - t0
                     j += i + 1
-                    tt = dt / i * n
+                    tt = dt / i * iterations
                     print(f' {dt / 60:6.2f}/{tt / 60:6.2f} min')
-                print(f'{i}/{n} ', end='', flush=True)
+                print(f'{i}/{iterations} ', end='', flush=True)
             elif i % 10 == 0:
                 print('+', end='', flush=True)
             r = random.randint(0, n - 1)

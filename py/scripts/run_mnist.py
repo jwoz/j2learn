@@ -1,6 +1,6 @@
 from j2learn.data.mnist_images import MNISTData
 from j2learn.etc.tools import reduce as reduce_image
-from j2learn.function.function import reLU,tanh
+from j2learn.function.function import tanh
 from j2learn.layer.category import Category
 from j2learn.layer.cnn import CNN
 from j2learn.layer.dense import Dense
@@ -49,7 +49,12 @@ print(v, p)
 # ## Gradient Descent
 gd = GradientDescent(model=model, learning_rate=0.0001)
 
-iterations = 2000
-reduced_images = [reduce_image(images[i]) for i in range(iterations) ]
+iterations = 20000
+reduced_images = [reduce_image(images[i]) for i in range(2000)]
 
-gd.sgd(reduced_images, labels[:iterations], iterations=iterations)
+gd.sgd(reduced_images, labels[:2000], iterations=iterations)
+
+for i in range(2001, 2020):
+    model.update_data_layer(reduced_image(images[i], label=labels[i]))
+    p = model.predict()
+    print(p, labels[i], model.value())
