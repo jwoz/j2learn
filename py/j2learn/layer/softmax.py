@@ -1,7 +1,7 @@
 import numpy as np
 from j2learn.layer.layer import LayerBase
 from j2learn.node.softmax import SoftMaxNode
-
+from j2learn.node.weight import Weight
 
 class SoftMax(LayerBase):
     def __init__(self, categories: list, underlying_layer: (list, None) = None, build: bool = True, weight: (float, None) = None, name: str = ''):
@@ -17,9 +17,9 @@ class SoftMax(LayerBase):
 
     def build(self, init=None):
         # take the underlying nodes and build n sums with separate weights, where n is the number of outputs
-        weight_count = len(self._categories * len(self._underlying_layer.node_count()))
+        weight_count = len(self._categories) * self._underlying_layer.node_count()
         weights = np.random.uniform(size=weight_count) if init is None else np.full(weight_count, init)
-        self._nodes = [SoftMaxNode(self._categories, weights, self._underlying_layer.nodes())]
+        self._nodes = [SoftMaxNode(self._categories, [Weight(w / sum(weights)) for w in weights], self._underlying_layer.nodes())]
         self._built = True
 
     def set_weights(self, weights):

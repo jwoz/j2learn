@@ -1,4 +1,5 @@
-from itertools import cycle
+import math
+
 import numpy as np
 
 
@@ -8,7 +9,7 @@ class SoftMaxNode:
         self._weights = weights
         self._underlying_nodes = underlying_nodes
         self._category_count = len(self._categories)
-        self._node_count = len(self._underlying_nodes)
+        self._underlying_node_count = len(self._underlying_nodes)
 
     @staticmethod
     def weights():
@@ -17,7 +18,7 @@ class SoftMaxNode:
     def node_index(self, cache=None):
         if self in cache:
             return cache[self]
-        values = [node.value(cache) for node in self._underlying_nodes]
+        values = self.value(cache)
         i = int(np.argmax(np.array(values)))
         return i
 
@@ -27,25 +28,33 @@ class SoftMaxNode:
 
     def value(self, cache=None):
         values = []
+        sum_weight = 0
         for c in range(self._category_count):
             exp_value = 0
-            exp_weights = 0
-            for n in range(self._node_count): # range(c*self._node_count, c*self._node_count+1):
-                exp_value += self._underlying_nodes[n] * self._weights[c*self._node_count + n]
-                exp_weights += self._underlying_nodes[n] * self._weights[c*self._node_count + n]
-
-        p = max([node.value(cache) for node in self._underlying_nodes])
-        return [p]
+            for n in range(self._underlying_node_count):  # range(c*self._node_count, c*self._node_count+1):
+                weight = self._weights[c * self._underlying_node_count + n].weight()
+                exp_value += self._underlying_nodes[n].value(cache) * self._weights[c * self._underlying_node_count + n].weight()
+                sum_weight += weight
+            exp_value = math.exp(exp_value)
+            values.append(exp_value)
+        values = [v / math.exp(sum_weight) for v in values]
+        return valuesc /
 
     def derivative(self, cache=None):
         """
         calculate wrt to largest value, but that's not strictly the whole truth.
         Need to track which weights derivative come into play.
         """
-        values = [node.value(cache) for node in self._underlying_nodes]
-        i = np.argmax(np.array(values))
+        values = self.value(cache)
+
         jacobian = self._underlying_nodes[i].derivative(cache)
         return jacobian
+
+    def chain_rule_factors(self, cache=None):
+        """
+        :return: chain rule factors of node with respect to underlying weights (aka derivatives wrt underlying nodes)
+        """
+        return
 
     def set_weight_derivatives(self, derivatives):
         pass

@@ -34,12 +34,18 @@ class Image:
     def label(self):
         return self._label
 
+    def node_count(self):
+        return len(self._nodes)
+
     def node(self, i, j=None):
         if j is None:
             assert i < len(self._nodes)
             return self._nodes[i]
         assert i * self._shape[1] + j < len(self._nodes), f'{i}, {j}: {i * self._shape[1] + j}>{len(self._nodes)}'
         return self._nodes[i * self._shape[1] + j]
+
+    def nodes(self):
+        return self._nodes
 
     def shape(self, dimension=None):
         if dimension is None:
