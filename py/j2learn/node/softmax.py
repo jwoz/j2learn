@@ -38,7 +38,7 @@ class SoftMaxNode:
             exp_value = math.exp(exp_value)
             values.append(exp_value)
         values = [v / math.exp(sum_weight) for v in values]
-        return valuesc /
+        return values
 
     def derivative(self, cache=None):
         """
@@ -46,7 +46,16 @@ class SoftMaxNode:
         Need to track which weights derivative come into play.
         """
         values = self.value(cache)
+        for kp in range(self._category_count):
+            for i in range(self._underlying_node_count):  # range(c*self._node_count, c*self._node_count+1):
+                weight_index = kp*self._underlying_node_count+i
+                for k in range(self._category_count):
+                    s = values[c]
+                    x = self._underlying_nodes[n].value(cache)
+                    d = (x-1)*s if c == n
 
+        for i, w in enumerate(self._weights):
+            for
         jacobian = self._underlying_nodes[i].derivative(cache)
         return jacobian
 
@@ -57,4 +66,5 @@ class SoftMaxNode:
         return
 
     def set_weight_derivatives(self, derivatives):
-        pass
+        for w, d in zip(self._weights, derivatives):
+            w.set_derivative(d)

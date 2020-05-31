@@ -1,7 +1,9 @@
 import numpy as np
+
 from j2learn.layer.layer import LayerBase
 from j2learn.node.softmax import SoftMaxNode
 from j2learn.node.weight import Weight
+
 
 class SoftMax(LayerBase):
     def __init__(self, categories: list, underlying_layer: (list, None) = None, build: bool = True, weight: (float, None) = None, name: str = ''):
