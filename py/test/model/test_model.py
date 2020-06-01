@@ -211,6 +211,19 @@ class TestModel(TestCase):
         ])
         self._run_derivatives_test(model)
 
+    def test_softmax_tiny(self):
+        image_data = [0.2]
+        categories = [1, 2]
+        model = Model(layers=[
+            Image(image_data=image_data, shape=(1, 1), maximum=1),
+            SoftMax(categories),
+        ])
+        model.compile(build=True)
+        v = model.value()
+        softmax_value = model._layers[1]._nodes[0].value()
+        softmax_derivative = model._layers[1]._nodes[0].derivative()
+        pass
+
     def test_softmax(self):
         image_data = [0.2, 0.5, 0.3]
         categories = [1, 2, 4]
@@ -220,6 +233,9 @@ class TestModel(TestCase):
         ])
         model.compile(build=True)
         v = model.value()
+        softmax_value = model._layers[1]._nodes[0].value()
+        softmax_derivative = model._layers[1]._nodes[0].derivative()
+
         # self.assertEqual(v, [max(image_data)])
         p = model.predict()
         # self.assertEqual(p, [categories[int(np.argmax(np.array(image_data)))]])
