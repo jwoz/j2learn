@@ -11,9 +11,8 @@ class SoftMaxNode:
         self._category_count = len(self._categories)
         self._underlying_node_count = len(self._underlying_nodes)
 
-    @staticmethod
-    def weights():
-        return []
+    def weights(self):
+        return self._weights
 
     def node_index(self, cache=None):
         if self in cache:
@@ -46,16 +45,17 @@ class SoftMaxNode:
         Need to track which weights derivative come into play.
         """
         values = self.value(cache)
-        derivatives = [[]] * self._category_count * self._underlying_node_count
+        jacobian = []
         for kp in range(self._category_count):
-            for i in range(self._underlying_node_count):  # range(c*self._node_count, c*self._node_count+1):
-                weight_index = kp*self._underlying_node_count+i
+            for i in range(self._underlying_node_count):
+                derivatives = []
                 for k in range(self._category_count):
                     s = values[k]
                     x = self._underlying_nodes[i].value(cache)
-                    d = (x-1.0)*s if kp == k else -s
-                    derivatives[weight_index].append(d)
-        return derivatives
+                    d = (x - 1.0) * s if kp == k else -s
+                    derivatives.append(d)
+                jacobian.append(derivatives)
+        return jacobian
 
     def chain_rule_factors(self, cache=None):
         """

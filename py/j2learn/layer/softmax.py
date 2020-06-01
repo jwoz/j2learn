@@ -28,7 +28,7 @@ class SoftMax(LayerBase):
         pass
 
     def weights(self):
-        return []
+        return self._nodes[0].weights()
 
     def value(self, cache=None):
         return self._nodes[0].value(cache)

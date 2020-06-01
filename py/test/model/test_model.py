@@ -211,17 +211,22 @@ class TestModel(TestCase):
         ])
         self._run_derivatives_test(model)
 
-    def test_softmax_tiny(self):
-        image_data = [0.2]
-        categories = [1, 2]
+    def test_softmax_small(self):
+        image_data = [0.2, 0.1]
+        categories = [1, 2, 3]
         model = Model(layers=[
-            Image(image_data=image_data, shape=(1, 1), maximum=1),
+            Image(image_data=image_data, shape=(2, 1), maximum=1),
             SoftMax(categories),
         ])
         model.compile(build=True)
         v = model.value()
         softmax_value = model._layers[1]._nodes[0].value()
+        self.assertEqual(len(categories), len(softmax_value))
         softmax_derivative = model._layers[1]._nodes[0].derivative()
+        bumped_derivatives = finite_differences(model, False)
+        for i in range(6):
+            for j in range(3):
+                self.assertAlmostEqual(softmax_derivative[i][j], list(bumped_derivatives.values())[i][j])
         pass
 
     def test_softmax(self):
