@@ -7,10 +7,10 @@ import numpy as np
 from j2learn.etc.tools import flatten, finite_differences
 from j2learn.function.function import reLU
 from j2learn.layer.category import Category
-from j2learn.layer.softmax import SoftMax
 from j2learn.layer.cnn import CNN
 from j2learn.layer.dense import Dense
 from j2learn.layer.image import Image
+from j2learn.layer.softmax import SoftMax
 from j2learn.model.model import Model
 
 
@@ -234,17 +234,10 @@ class TestModel(TestCase):
         categories = [1, 2, 4]
         model = Model(layers=[
             Image(image_data=image_data, shape=(3, 1), maximum=1),
+            Dense(reLU(), (3, 1)),
             SoftMax(categories),
         ])
-        model.compile(build=True)
-        v = model.value()
-        softmax_value = model._layers[1]._nodes[0].value()
-        softmax_derivative = model._layers[1]._nodes[0].derivative()
-
-        # self.assertEqual(v, [max(image_data)])
-        p = model.predict()
-        # self.assertEqual(p, [categories[int(np.argmax(np.array(image_data)))]])
-        pass
+        self._run_derivatives_test(model)
 
     def test_jacobian_category_3(self):
         image_data = [0.2, 0.5, 0.3]
@@ -308,4 +301,3 @@ class TestModel(TestCase):
         weights = model.weights()
         derivatives = [w.derivative() for w in weights]
         pass
-

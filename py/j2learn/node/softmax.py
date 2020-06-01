@@ -14,6 +14,14 @@ class SoftMaxNode:
     def weights(self):
         return self._weights
 
+    def weight_count(self):
+        return len(self._weights)
+
+    def set_weights(self, weights):
+        assert len(weights) == len(self._weights)
+        for w, ww in zip(self._weights, weights):
+            w.set_weight(ww)
+
     def node_index(self, cache=None):
         if self in cache:
             return cache[self]
@@ -61,8 +69,16 @@ class SoftMaxNode:
         """
         :return: chain rule factors of node with respect to underlying weights (aka derivatives wrt underlying nodes)
         """
-        return
+        values = self.value(cache)
+        factors = []
+        for k in range(self._category_count):
+            node_factors = []
+            for i in range(self._underlying_node_count):  # range(c*self._node_count, c*self._node_count+1):
+                factor = values[k] * self._weights[k * self._underlying_node_count + i].weight()
+                node_factors.append(factor)
+            factors.append(node_factors)
+        return factors
 
     def set_weight_derivatives(self, derivatives):
         for w, d in zip(self._weights, derivatives):
-            w.set_derivative(d)
+            w.set_derivative(d, is_list=True)

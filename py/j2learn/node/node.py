@@ -4,6 +4,7 @@ from j2learn.node.data import ZeroNode
 
 
 class Node:
+    multi = False
     def __init__(self, activation, weights, underlying_nodes, name=''):
         self._activation = activation
         self._weights = weights

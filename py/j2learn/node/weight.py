@@ -18,8 +18,11 @@ class Weight:
     def derivative(self):
         return self._derivatives
 
-    def set_derivative(self, derivative, name=''):
-        self._derivatives.append(derivative)
+    def set_derivative(self, derivative, name='', is_list=False):
+        if is_list:
+            self._derivatives += derivative
+        else:
+            self._derivatives.append(derivative)
         self._derivative_name = name
 
 
