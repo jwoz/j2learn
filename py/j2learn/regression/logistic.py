@@ -13,5 +13,5 @@ class Logistic:
         if value < 0 or value > 1:
             print(f'probability out of range: {value}, {expected_label} vs {self._model.predict()}')
         if self._model.predict() == [expected_label]:
-            return math.log(value), 1.0 / value
-        return math.log(1.0 - value), -1.0 / (1.0 - value)
+            return -math.log(value), -1.0 / value
+        return -math.log(1.0 - value), 1.0 / (1.0 - value)
