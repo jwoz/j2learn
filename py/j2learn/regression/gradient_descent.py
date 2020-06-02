@@ -1,5 +1,6 @@
 import random
 from timeit import default_timer
+
 from j2learn.regression.logistic import Logistic
 
 
@@ -21,7 +22,8 @@ class GradientDescent:
                     dt = default_timer() - t0
                     j += i + 1
                     tt = dt / i * iterations
-                    print(f' {dt / 60:6.2f}/{tt / 60:6.2f} min, sum(delta)={sum_delta:8.5g}')
+                    print(f' {dt / 60:6.2f}/{tt / 60:6.2f} min, sum(delta)={sum_delta:8.5g}', end='\t')
+                    print(f' *** {self._model.value()[0]:6.3f}, {self._model.predict()[0]}, {self._model._layers[0].label()}: {self._objective.cost(self._model._layers[0].label())[0]:6.3g},  {self._objective.cost(self._model._layers[0].label())[1]:6.3g} ***')
                 print(f'{i}/{iterations} ', end='', flush=True)
             elif i % 10 == 0:
                 print('+', end='', flush=True)
@@ -32,7 +34,6 @@ class GradientDescent:
             self._model.jacobian()
             cost, chain_rule_factor = self._objective.cost(label)
             weights = self._model.weights()
-            # update weights (missing the cost function)
             sum_delta = 0
             for w in weights:
                 derivative = w.derivative()

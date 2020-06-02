@@ -22,7 +22,7 @@ model = Model(layers=[
     CNN(activation, (3, 3), name='a'),
     # CNN(activation, (3, 3), name='b'),
     # CNN(activation, (3, 3), name='c'),
-    Dense(identity(), (10, 1), name='d'),
+    Dense(activation, (2, 1), name='d'),
     SoftMax([5], name='e'),
     # Category([i for i in range(10)]),
 ])
@@ -43,14 +43,14 @@ p = model.predict()
 print(v, p)
 
 # ## Gradient Descent
-gd = GradientDescent(model=model, learning_rate=0.0001)
+gd = GradientDescent(model=model, learning_rate=0.00001)
 
-iterations = 10000
+iterations = 20000
 reduced_images = [reduce_image(images[i]) for i in range(2000)]
 
 gd.sgd(reduced_images, labels[:2000], iterations=iterations)
 
-for i in range(2001, 2020):
+for i in range(2001, 2100):
     model.update_data_layer(reduce_image(images[i]), label=labels[i])
     p = model.predict()
-    print(p, labels[i], model.value())
+    print(f'{p[0]}, {labels[i]}, {model.value()[0]:6.4f}')
