@@ -15,23 +15,16 @@ images, labels = mndata.training()
 
 r = 49  # a nice number three
 reduced_image = reduce_image(images[r])
-image = Image(image_data=reduced_image, label=labels[r])
 
 activation = tanh()
-cnn_a = CNN(activation, (3, 3), name='a')
-cnn_b = CNN(activation, (3, 3), name='b')
-cnn_c = CNN(activation, (3, 3), name='c')
-dense = Dense(identity(), (10, 1), name='d')
-softmax = SoftMax([5], name='d')
-category = Category([i for i in range(10)])
 model = Model(layers=[
-    image,
-    # cnn_a,
-    # cnn_b,
-    # cnn_c,
-    dense,
-    softmax,
-    # category,
+    Image(image_data=reduced_image, label=labels[r]),
+    CNN(activation, (3, 3), name='a'),
+    # CNN(activation, (3, 3), name='b'),
+    # CNN(activation, (3, 3), name='c'),
+    Dense(identity(), (10, 1), name='d'),
+    SoftMax([5], name='e'),
+    # Category([i for i in range(10)]),
 ])
 
 model.compile(build=True)
