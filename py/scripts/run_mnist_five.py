@@ -19,16 +19,16 @@ activation = tanh()
 model = Model(layers=[
     Image(shape=(14, 14)),
     CNN(activation, (3, 3), name='a'),
-    CNN(activation, (3, 3), name='b'),
+    CNN(activation, (5, 5), name='b'),
     CNN(activation, (3, 3), name='c'),
-    CNN(activation, (3, 3), name='d'),
-    Dense(activation, (14 * 14, 1), name='e'),
+    # CNN(activation, (3, 3), name='d'),
+    Dense(activation, (14, 1), name='e'),
     SoftMax([5], name='f'),
 ])
 model.compile(build=True)
 
 # Gradient Descent
-gd = GradientDescent(model=model, learning_rate=0.000001, labels=predict_labels)
+gd = GradientDescent(model=model, learning_rate=0.01, labels=predict_labels)
 
 # train
 images, labels = mndata.training()

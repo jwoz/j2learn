@@ -1,6 +1,8 @@
 import random
 from timeit import default_timer
 
+import pandas as pd
+
 from j2learn.regression.logistic import Logistic
 
 
@@ -9,7 +11,7 @@ class GradientDescent:
         self._model = model
         self._objective = Logistic(model)
         self._learning_rate = learning_rate
-        self._labels = labels # TODO not in the right place
+        self._labels = labels  # TODO not in the right place
 
     def sgd(self, images, labels, iterations=200):
         n = len(images)
@@ -18,6 +20,7 @@ class GradientDescent:
         j = 0
         sum_delta = None
         i = 0
+        snapshot = []
         while i < iterations:
             r = random.randint(0, n - 1)
             image = images[r]
@@ -46,4 +49,9 @@ class GradientDescent:
                 delta = self._learning_rate * chain_rule_factor * w.derivative()[0]
                 sum_delta -= delta
 
+                if i % int(iterations / 100) == 0 and i > 0:
+                    snapshot.append([i, w.id, w.name, w.weight(), delta])
                 self._model.set_weight(w, w.weight() - delta)
+
+            if i % int(iterations / 100) == 0 and i > 0:
+                pd.DataFrame(data=snapshot, columns=['iteration', 'id', 'name', 'weight', 'delta']).to_csv('five_snapshot.csv')
