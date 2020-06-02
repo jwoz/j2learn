@@ -40,6 +40,8 @@ class GradientDescent:
             self._model.update_data_layer(image, label)
             self._model.jacobian()
             cost, chain_rule_factor = self._objective.cost(label)
+            if cost is None:
+                continue
             i += 1
             weights = self._model.weights()
             sum_delta = 0

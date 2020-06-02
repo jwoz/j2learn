@@ -4,7 +4,7 @@ import pandas as pd
 
 from j2learn.data.mnist_images import MNISTData
 from j2learn.etc.tools import reduce as reduce_image
-from j2learn.function.function import tanh
+from j2learn.function.function import tanh, reLU
 from j2learn.layer.cnn import CNN
 from j2learn.layer.dense import Dense
 from j2learn.layer.image import Image
@@ -15,15 +15,16 @@ from j2learn.regression.gradient_descent import GradientDescent
 mndata = MNISTData(path='../test/mnist')
 predict_labels = [1, 5]
 
-activation = tanh()
+activation = reLU()
 model = Model(layers=[
     Image(shape=(14, 14)),
-    CNN(activation, (3, 3), name='a'),
-    CNN(activation, (5, 5), name='b'),
-    CNN(activation, (3, 3), name='c'),
+    # CNN(activation, (3, 3), name='a'),
+    # CNN(activation, (5, 5), name='b'),
+    # CNN(activation, (3, 3), name='c'),
     # CNN(activation, (3, 3), name='d'),
-    Dense(activation, (14, 1), name='e'),
-    SoftMax([5], name='f'),
+    Dense(activation, (200, 1), name='d1'),
+    Dense(activation, (100, 1), name='d2'),
+    SoftMax([5], name='s1'),
 ])
 model.compile(build=True)
 
