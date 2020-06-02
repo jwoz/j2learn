@@ -18,10 +18,6 @@ predict_labels = [1, 5]
 activation = reLU()
 model = Model(layers=[
     Image(shape=(14, 14)),
-    # CNN(activation, (3, 3), name='a'),
-    # CNN(activation, (5, 5), name='b'),
-    # CNN(activation, (3, 3), name='c'),
-    # CNN(activation, (3, 3), name='d'),
     Dense(activation, (200, 1), name='d1'),
     Dense(activation, (100, 1), name='d2'),
     SoftMax([5], name='s1'),
