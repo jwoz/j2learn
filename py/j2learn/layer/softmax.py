@@ -16,7 +16,6 @@ class SoftMax(LayerBase):
 
     def initialize(self, underlying_layer, build):
         super().initialize(underlying_layer, build)
-        # assert len(self._categories) == self._underlying_layer.shape(0)
         assert self._underlying_layer.shape(1) == 1
 
     def build(self, init=None):

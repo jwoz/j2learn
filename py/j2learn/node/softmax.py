@@ -70,18 +70,17 @@ class SoftMaxNode:
         """
         :return: chain rule factors of node with respect to underlying weights (aka derivatives wrt underlying nodes)
         """
-        values = self.value(cache)
         factors = []
         exponentials = self._exponentials(cache)
         sum_exponentials = sum(exponentials)
-        for kp in range(self._category_count):
+        for k in range(self._category_count):
+            derivatives = []
             for i in range(self._underlying_node_count):
-                derivatives = []
-                for k in range(self._category_count):
-                    w = self._weights[kp * self._underlying_node_count + i].weight()
-                    d = (w * exponentials[k] * (sum_exponentials - exponentials[k])) / (sum_exponentials ** 2) if k == kp else -values[k] * values[kp] * w
-                    derivatives.append(d)
-                factors.append(derivatives)
+                w = self._weights[k * self._underlying_node_count + i].weight()
+                denomdx = sum([exponentials[j] * self._weights[j * self._underlying_node_count + i].weight() for j in range(self._category_count)])
+                d = exponentials[k] * (w * sum_exponentials - denomdx) / (sum_exponentials ** 2)
+                derivatives.append(d)
+            factors.append(derivatives)
         return factors
 
     def set_weight_derivatives(self, derivatives):

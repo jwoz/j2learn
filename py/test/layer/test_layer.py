@@ -1,7 +1,7 @@
 from unittest import TestCase
 
 from j2learn.data.mnist_images import MNISTData
-from j2learn.etc.tools import finite_difference, flatten
+from j2learn.etc.tools import finite_differences, flatten
 from j2learn.function.function import reLU
 from j2learn.layer.dense import Dense
 from j2learn.layer.image import Image
@@ -22,21 +22,12 @@ class TestLayerBase(TestCase):
         weight_count = model.weight_count()
 
         # bump and grind
-        gradients = []
-        i = 0
-        while i < weight_count:
-            gradient = finite_difference(model, i, probability=False, epsilon=0.01)
-            gradients.append(gradient)
-            i += 1
+        gradients = finite_differences(model, False)
         jacobian = list(flatten(dense.jacobian()))
         mod_jacb = list(flatten(model.jacobian()))
         assert len(gradients) == len(jacobian)
-        for g, j, m in zip(gradients, jacobian, mod_jacb):
-            self.assertAlmostEqual(g, j, delta=0.001)
+        for g, j, m in zip(gradients.values(), jacobian, mod_jacb):
+            print(f'{g[0]:8.6f} {j:8.6f} {m:8.6f}')
+        for g, j, m in zip(gradients.values(), jacobian, mod_jacb):
+            self.assertAlmostEqual(g[0], j, delta=0.001)
             self.assertAlmostEqual(j, m, delta=0.000001)
-
-        # nonzero_jacobian = [(i, j) for i, j in enumerate(jacobian) if j != 0]
-        # print(nonzero_jacobian)
-
-    def test_chain_rule_factors(self):
-        self.fail()

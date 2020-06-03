@@ -33,7 +33,9 @@ class TestModel(TestCase):
         print(f'Bumped jacobian:     {default_timer() - t0}')
         model_weights = model.weights()
         for m in model_weights:
-            print(f'{m}, {m.id}: {m.derivative()} vs {bumped_derivatives[m.id]}')
+            d = ', '.join([f'{dd:8.6f}' for dd in m.derivative()])
+            b = ', '.join([f'{dd:8.6f}' for dd in bumped_derivatives[m.id]])
+            print(f'{m}, {m.id}: [{d}] vs [{b}]')
         for w in model_weights:
             a = w.derivative()
             b = bumped_derivatives[w.id]
@@ -211,7 +213,7 @@ class TestModel(TestCase):
         ])
         self._run_derivatives_test(model)
 
-    def test_softmax_small(self):
+    def test_softmax_tiny(self):
         image_data = [0.2, 0.1]
         categories = [1, 2, 3]
         model = Model(layers=[
@@ -228,6 +230,16 @@ class TestModel(TestCase):
             for j in range(3):
                 self.assertAlmostEqual(softmax_derivative[i][j], list(bumped_derivatives.values())[i][j])
         pass
+
+    def test_softmax_small(self):
+        image_data = [0.5]
+        categories = [1, 2]
+        model = Model(layers=[
+            Image(image_data=image_data, shape=(1, 1), maximum=1),
+            Dense(reLU(), (1, 1)),
+            SoftMax(categories),
+        ])
+        self._run_derivatives_test(model)
 
     def test_softmax(self):
         image_data = [0.2, 0.5, 0.3]

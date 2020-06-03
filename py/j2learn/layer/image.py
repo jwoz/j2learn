@@ -76,8 +76,8 @@ class Image:
 
     @staticmethod
     def chain_rule_factors(upper_layer_factors=None, cache=None):
-        return upper_layer_factors
+        raise NotImplemented('Image does not have chain rule factors')
 
     @staticmethod
     def jacobian(factors=None, cache=None):
-        return []
+        raise NotImplemented('Image does not have a jacobian')

@@ -29,8 +29,8 @@ class Model:
             layer.build()
         self._built = True
 
-    def update_data_layer(self, data, label=None):
-        self._layers[0].set_image_data_and_label(data, label)
+    def update_data_layer(self, data, label=None, maximum=255):
+        self._layers[0].set_image_data_and_label(data, label, maximum)
         self._node_value_cache = {}
 
     def weight_count(self):
@@ -71,7 +71,7 @@ class Model:
     def jacobian(self):
         factors = []
         jacobians = []
-        for layer in self._layers[::-1]:
+        for layer in self._layers[:0:-1]:
             jacobian = layer.jacobian(factors, self._node_value_cache)
             jacobians.insert(0, jacobian)
             factors = layer.chain_rule_factors(factors, self._node_value_cache)
@@ -80,7 +80,7 @@ class Model:
     def chain_rule_factors(self):
         layer_factors = []
         factors = []
-        for layer in self._layers[::-1]:
+        for layer in self._layers[:0:-1]:
             factors = layer.chain_rule_factors(factors, self._node_value_cache)
             layer_factors.append(factors)
         return layer_factors
