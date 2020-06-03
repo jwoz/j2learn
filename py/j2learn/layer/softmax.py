@@ -45,8 +45,9 @@ class SoftMax(LayerBase):
     def node_derivatives(self, cache=None):
         return self._nodes[0].derivative(cache)
 
+    def node_chain_rule_factors(self, cache=None):
+        return self._nodes[0].chain_rule_factors(cache)
+
     def set_weight_derivatives(self, derivatives):
         self._nodes[0].set_weight_derivatives(derivatives)
 
-    def chain_rule_factors(self, upper_layer_factors=None, cache=None):
-        return self._nodes[0].chain_rule_factors(cache)

@@ -220,9 +220,9 @@ class TestModel(TestCase):
         ])
         model.compile(build=True)
         v = model.value()
-        softmax_value = model._layers[1]._nodes[0].value()
+        softmax_value = model._layers[1]._nodes[0].value({})
         self.assertEqual(len(categories), len(softmax_value))
-        softmax_derivative = model._layers[1]._nodes[0].derivative()
+        softmax_derivative = model._layers[1]._nodes[0].derivative({})
         bumped_derivatives = finite_differences(model, False)
         for i in range(6):
             for j in range(3):

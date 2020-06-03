@@ -74,6 +74,9 @@ class LayerBase:
     def node_derivatives(self, cache=None):
         return [node.derivative(cache) for node in self._nodes]
 
+    def node_chain_rule_factors(self, cache=None):
+        return [node.chain_rule_factors(cache) for node in self._nodes]
+
     def set_weight_derivatives(self, derivatives):
         for ds, ns in zip(derivatives, cycle(self._nodes)):
             ns.set_weight_derivatives(ds)
@@ -98,7 +101,7 @@ class LayerBase:
     def chain_rule_factors(self, upper_layer_factors=None, cache=None):
         if len(self._chain_rule_factors):
             return self._chain_rule_factors
-        factors = [node.chain_rule_factors(cache) for node in self._nodes]
+        factors = self.node_chain_rule_factors(cache)
         if upper_layer_factors is not None and len(upper_layer_factors):
             factors = matrix_product(upper_layer_factors, factors)
         self._chain_rule_factors = factors

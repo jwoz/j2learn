@@ -33,31 +33,35 @@ class SoftMaxNode:
         i = self.node_index(cache)
         return [self._categories[i]]
 
-    def value(self, cache=None):
-        values = []
-        for c in range(self._category_count):
+    def _exponentials(self, cache=None):
+        exponentials = []
+        for k in range(self._category_count):
             value = 0
-            for n in range(self._underlying_node_count):  # range(c*self._node_count, c*self._node_count+1):
-                weight = self._weights[c * self._underlying_node_count + n].weight()
-                value += self._underlying_nodes[n].value(cache) * weight
-            values.append(math.exp(value))
-        values = [v / sum(values) for v in values]
+            for i in range(self._underlying_node_count):
+                weight = self._weights[k * self._underlying_node_count + i].weight()
+                value += self._underlying_nodes[i].value(cache) * weight
+            exponentials.append(math.exp(value))
+        return exponentials
+
+    def value(self, cache=None):
+        if self in cache:
+            return cache[self]
+        exponentials = self._exponentials(cache)
+        values = [e / sum(exponentials) for e in exponentials]
+        cache[self] = values
         return values
 
     def derivative(self, cache=None):
-        """
-        calculate wrt to largest value, but that's not strictly the whole truth.
-        Need to track which weights derivative come into play.
-        """
         values = self.value(cache)
         jacobian = []
+        exponentials = self._exponentials(cache)
+        sum_exponentials = sum(exponentials)
         for kp in range(self._category_count):
             for i in range(self._underlying_node_count):
                 derivatives = []
                 for k in range(self._category_count):
-                    s = values[k]
                     x = self._underlying_nodes[i].value(cache)
-                    d = (x - 1.0) * s if kp == k else -s
+                    d = (x * exponentials[k] * (sum_exponentials - exponentials[k])) / (sum_exponentials ** 2) if k == kp else -values[k] * values[kp] * x
                     derivatives.append(d)
                 jacobian.append(derivatives)
         return jacobian
@@ -68,12 +72,16 @@ class SoftMaxNode:
         """
         values = self.value(cache)
         factors = []
-        for k in range(self._category_count):
-            node_factors = []
-            for i in range(self._underlying_node_count):  # range(c*self._node_count, c*self._node_count+1):
-                factor = values[k] * self._weights[k * self._underlying_node_count + i].weight()
-                node_factors.append(factor)
-            factors.append(node_factors)
+        exponentials = self._exponentials(cache)
+        sum_exponentials = sum(exponentials)
+        for kp in range(self._category_count):
+            for i in range(self._underlying_node_count):
+                derivatives = []
+                for k in range(self._category_count):
+                    w = self._weights[kp * self._underlying_node_count + i].weight()
+                    d = (w * exponentials[k] * (sum_exponentials - exponentials[k])) / (sum_exponentials ** 2) if k == kp else -values[k] * values[kp] * w
+                    derivatives.append(d)
+                factors.append(derivatives)
         return factors
 
     def set_weight_derivatives(self, derivatives):
