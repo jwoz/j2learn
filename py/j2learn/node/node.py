@@ -16,7 +16,7 @@ class Node:
     def __str__(self):
         return self._name
 
-    def _weighted_sum_underlying(self, normalize=True, cache=None):
+    def _weighted_sum_underlying(self, normalize=False, cache=None):
         weighted_sum = 0
         for w, u in zip(self._weights, self._underlying_nodes):
             weight = w.weight()

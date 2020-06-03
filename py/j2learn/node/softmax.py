@@ -35,16 +35,13 @@ class SoftMaxNode:
 
     def value(self, cache=None):
         values = []
-        sum_weight = 0
         for c in range(self._category_count):
-            exp_value = 0
+            value = 0
             for n in range(self._underlying_node_count):  # range(c*self._node_count, c*self._node_count+1):
                 weight = self._weights[c * self._underlying_node_count + n].weight()
-                exp_value += self._underlying_nodes[n].value(cache) * self._weights[c * self._underlying_node_count + n].weight()
-                sum_weight += weight
-            exp_value = math.exp(exp_value)
-            values.append(exp_value)
-        values = [v / math.exp(sum_weight) for v in values]
+                value += self._underlying_nodes[n].value(cache) * weight
+            values.append(math.exp(value))
+        values = [v / sum(values) for v in values]
         return values
 
     def derivative(self, cache=None):

@@ -20,6 +20,9 @@ class Model:
         self._compiled = True
         self._built = build
 
+    def clear_cache(self):
+        self._node_value_cache = {}
+
     def build(self):
         assert self._compiled, 'Model must be compiled first.'
         for layer in self._layers:

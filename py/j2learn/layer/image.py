@@ -6,7 +6,7 @@ from j2learn.node.data import DataNode
 class Image:
     is_root = True
 
-    def __init__(self, image_data=None, shape=None, label=None, maximum=256):
+    def __init__(self, image_data=None, shape=None, label=None, maximum=255):
         assert image_data is not None or shape is not None
         self._label = label
 
@@ -18,7 +18,7 @@ class Image:
         image_data = [0] * shape[1] * shape[0] if image_data is None else [i / maximum for i in image_data]
         self._nodes = [DataNode(i, f'Data_{j}') for j, i in enumerate(image_data)]
 
-    def set_image_data_and_label(self, image_data, label=None, maximum=256):
+    def set_image_data_and_label(self, image_data, label=None, maximum=255):
         for n, i in zip(self._nodes, image_data):
             n.set_value(i / maximum)
         self._label = label

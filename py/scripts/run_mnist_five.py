@@ -18,7 +18,7 @@ predict_labels = [1, 5]
 activation = reLU()
 model = Model(layers=[
     Image(shape=(14, 14)),
-    Dense(activation, (200, 1), name='d1'),
+    Dense(activation, (300, 1), name='d1'),
     Dense(activation, (100, 1), name='d2'),
     SoftMax([5], name='s1'),
 ])
