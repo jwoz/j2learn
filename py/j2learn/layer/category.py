@@ -27,7 +27,7 @@ class Category(LayerBase):
     def value(self, cache=None):
         return self._nodes[0].value(cache)
 
-    def predict(self, cache=None):
+    def predict(self, index=False, cache=None):
         return self._nodes[0].predict(cache)
 
     def chain_rule_factors(self, upper_layer_factors=None, cache=None):

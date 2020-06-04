@@ -4,12 +4,10 @@ import pandas as pd
 
 from j2learn.data.mnist_images import MNISTData
 from j2learn.etc.tools import reduce as reduce_image
-from j2learn.function.function import tanh, reLU
-from j2learn.layer.cnn import CNN
+from j2learn.function.function import reLU
 from j2learn.layer.dense import Dense
 from j2learn.layer.image import Image
 from j2learn.layer.softmax import SoftMax
-from j2learn.layer.category import Category
 from j2learn.model.model import Model
 from j2learn.regression.gradient_descent import GradientDescent
 
