@@ -1,60 +1,68 @@
+import datetime
+
+import pandas as pd
+
 from j2learn.data.mnist_images import MNISTData
 from j2learn.etc.tools import reduce as reduce_image
-from j2learn.function.function import tanh, identity
-from j2learn.layer.category import Category
-from j2learn.layer.cnn import CNN
+from j2learn.function.function import reLU
 from j2learn.layer.dense import Dense
 from j2learn.layer.image import Image
+from j2learn.layer.softmax import SoftMax
 from j2learn.model.model import Model
 from j2learn.regression.gradient_descent import GradientDescent
 
 mndata = MNISTData(path='../test/mnist')
+predict_labels = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
-images, labels = mndata.training()
+reduce = True
+if reduce:
+    nx = ny = 14
+else:
+    nx = ny = 28
 
-r = 49  # a nice number three
-reduced_image = reduce_image(images[r])
-image = Image(image_data=reduced_image, label=labels[r])
+activation = reLU()
+this_model_works_with_reduced_images_and_learning_1 = Model(layers=[Image(shape=(nx, ny)), Dense(activation, (20, 1), name='d1'), SoftMax([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], name='s1')])
 
-activation = tanh()
-cnn_a = CNN(activation, (3, 3), name='a')
-cnn_b = CNN(activation, (3, 3), name='b')
-cnn_c = CNN(activation, (3, 3), name='c')
-dense = Dense(identity(), (10, 1), name='d')
-category = Category([i for i in range(10)])
 model = Model(layers=[
-    image,
-    cnn_a,
-    cnn_b,
-    cnn_c,
-    dense,
-    category,
+    Image(shape=(nx, ny)),
+    Dense(activation, (20, 1), name='d1'),
+    Dense(activation, (10, 1), name='d2'),
+    # Dense(activation, (10, 1), name='d2'),
+    SoftMax([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], name='s1'),
 ])
-
 model.compile(build=True)
 
-# ## Some values
-v = model.value()
-p = model.predict()
-analytic_jacobian = model.jacobian()
-print(v, p)
+# Gradient Descent
+gd = GradientDescent(model=model, learning_rate=0.1, labels=predict_labels)
 
-r = 25
-reduced_image = reduce_image(images[r])
-model.update_data_layer(reduced_image, label=labels[r])
-v = model.value()
-p = model.predict()
-print(v, p)
+# train
+images, labels = mndata.training()
+train_images = []
+train_labels = []
+i = 0
+train_n = len(images)
+while i < len(images) and len(train_images) < train_n:
+    if labels[i] not in predict_labels:
+        i += 1
+        continue
+    train_images.append(reduce_image(images[i]) if reduce else images[i])
+    train_labels.append(labels[i])
+    i += 1
 
-# ## Gradient Descent
-gd = GradientDescent(model=model, learning_rate=0.0001)
+iterations = 20000
+gd.sgd(train_images, train_labels, iterations=iterations)
 
-iterations = 10000
-reduced_images = [reduce_image(images[i]) for i in range(2000)]
+# test the model
+test_images, test_labels = mndata.testing()
 
-gd.sgd(reduced_images, labels[:2000], iterations=iterations)
-
-for i in range(2001, 2020):
-    model.update_data_layer(reduce_image(images[i]), label=labels[i])
+predictions = []
+for i, (ti, tl) in enumerate(zip(test_images, test_labels)):
+    if tl not in predict_labels:
+        continue
+    model.update_data_layer(reduce_image(ti) if reduce else ti)
     p = model.predict()
-    print(p, labels[i], model.value())
+    if i % 100 == 0:
+        print(f'{p}, {tl}, {max(model.value()):6.4f}')
+    predictions.append(dict(label=tl, predicted_label=p, probability=max(model.value())))
+predictions = pd.DataFrame(predictions)
+predictions.to_csv(f'mnist_{datetime.datetime.now():%Y%m%dT%H%M}.csv')

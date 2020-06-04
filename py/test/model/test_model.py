@@ -144,6 +144,22 @@ class TestModel(TestCase):
             model
         )
 
+    def test_jacobian_dense_101_51_softmax_5(self):
+        random.seed(42)
+        image = Image(image_data=[random.randint(0, 255) for _ in range(2)], shape=(1, 2))
+        dense_a = Dense(reLU(), (10, 1), name='a')
+        dense_b = Dense(reLU(), (5, 1), name='b')
+        softmax = SoftMax([1, 2, 3, 4, 5], name='c')
+        model = Model(layers=[
+            image,
+            dense_a,
+            dense_b,
+            softmax,
+        ])
+        self._run_derivatives_test(
+            model
+        )
+
     def test_jacobian_cnn_12_12_11(self):
         image = [random.randint(0, 255) for _ in range(2)]
         image = Image(image_data=image, shape=(1, 2))

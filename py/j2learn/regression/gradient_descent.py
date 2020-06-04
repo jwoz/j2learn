@@ -1,3 +1,4 @@
+import numpy as np
 import random
 from timeit import default_timer
 
@@ -33,21 +34,21 @@ class GradientDescent:
                     j += i + 1
                     tt = dt / i * iterations
                     print(f' {dt / 60:6.2f}/{tt / 60:6.2f} min, sum(delta)={sum_delta:8.5g}', end='\t')
-                    print(f' *** {max(self._model.value()):6.3f}, {self._model.predict()}, {self._model._layers[0].label()}: {self._objective.cost(self._model._layers[0].label())[0]:6.3g},  {self._objective.cost(self._model._layers[0].label())[1]:6.3g} ***')
+                    probabilities = ', '.join([f'{v:5.2f}' for v in self._model.value()])
+                    print(f' *** {max(self._model.value()):6.3f}, {self._model.predict()}, {self._model._layers[0].label()} ## [{probabilities}] ***')
                 print(f'{i}/{iterations} ', end='', flush=True)
             elif i % 10 == 0:
                 print('+', end='', flush=True)
             self._model.update_data_layer(image, label)
             self._model.jacobian()
-            cost, chain_rule_factor, index = self._objective.cost(label)
-            if cost is None:
-                continue
+            costs, chain_rule_factors = self._objective.cost(label)
             i += 1
             weights = self._model.weights()
             sum_delta = 0
             for w in weights:
-                derivative = w.derivative()[index]
-                delta = self._learning_rate * chain_rule_factor * derivative
+                derivatives = w.derivative()
+                derivative = sum([crf*d for crf, d in zip(chain_rule_factors, derivatives) if not np.isnan(d*crf)])
+                delta = self._learning_rate * derivative
                 sum_delta -= delta
 
                 if i % int(iterations / 100) == 0 and i > 0:
@@ -55,4 +56,4 @@ class GradientDescent:
                 self._model.set_weight(w, w.weight() - delta)
 
             if i % int(iterations / 100) == 0 and i > 0:
-                pd.DataFrame(data=snapshot, columns=['iteration', 'id', 'name', 'weight', 'delta']).to_csv('five_snapshot.csv')
+                pd.DataFrame(data=snapshot, columns=['iteration', 'id', 'name', 'weight', 'delta']).to_csv('sgd_snapshot.csv')
