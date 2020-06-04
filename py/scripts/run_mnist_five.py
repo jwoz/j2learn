@@ -9,6 +9,7 @@ from j2learn.layer.cnn import CNN
 from j2learn.layer.dense import Dense
 from j2learn.layer.image import Image
 from j2learn.layer.softmax import SoftMax
+from j2learn.layer.category import Category
 from j2learn.model.model import Model
 from j2learn.regression.gradient_descent import GradientDescent
 
@@ -20,7 +21,7 @@ model = Model(layers=[
     Image(shape=(14, 14)),
     Dense(activation, (300, 1), name='d1'),
     Dense(activation, (100, 1), name='d2'),
-    SoftMax([5], name='s1'),
+    SoftMax([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], name='s1'),
 ])
 model.compile(build=True)
 
@@ -53,7 +54,7 @@ for i, (ti, tl) in enumerate(zip(test_images, test_labels)):
     model.update_data_layer(reduce_image(ti))
     p = model.predict()
     if i % 100 == 0:
-        print(f'{p[0]}, {tl}, {model.value()[0]:6.4f}')
-    predictions.append(dict(label=tl, predicted_label=p[0], probability=model.value()[0]))
+        print(f'{p}, {tl}, {max(model.value()):6.4f}')
+    predictions.append(dict(label=tl, predicted_label=p, probability=max(model.value())))
 predictions = pd.DataFrame(predictions)
 predictions.to_csv(f'five_{datetime.datetime.now():%Y%m%dT%H%M}.csv')

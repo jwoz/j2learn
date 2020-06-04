@@ -51,9 +51,9 @@ class Model:
         self._weights = weights
         return weights
 
-    def predict(self):
+    def predict(self, index=False):
         assert self._built, 'The model has not been built, cannot predict'
-        return self._layers[-1].predict(self._node_value_cache)
+        return self._layers[-1].predict(index=index, cache=self._node_value_cache)
 
     def value(self):
         assert self._built, 'The model has not been built, cannot predict'

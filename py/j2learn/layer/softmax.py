@@ -38,8 +38,8 @@ class SoftMax(LayerBase):
     def value(self, cache=None):
         return self._nodes[0].value(cache)
 
-    def predict(self, cache=None):
-        return self._nodes[0].predict(cache)
+    def predict(self, index=False, cache=None):
+        return self._nodes[0].predict(index, cache)
 
     def node_derivatives(self, cache=None):
         return self._nodes[0].derivative(cache)

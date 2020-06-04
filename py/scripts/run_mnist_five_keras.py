@@ -15,10 +15,9 @@ model.compile(optimizer='sgd', loss='sparse_categorical_crossentropy')
 mnist = keras.datasets.mnist
 (X_train_full, y_train_full), (X_test, y_test) = mnist.load_data()
 X_valid, X_train = X_train_full[:5000] / 255.0, X_train_full[5000:] / 255.0
-y_valid, y_train = y_train_full[:5000] , y_train_full[5000:]
+y_valid, y_train = y_train_full[:5000], y_train_full[5000:]
 
 class_names = [str(i) for i in range(10)]
-
 
 history = model.fit(X_train, y_train, epochs=10, validation_data=(X_valid, y_valid))
 

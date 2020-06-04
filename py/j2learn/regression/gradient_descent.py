@@ -39,16 +39,15 @@ class GradientDescent:
                 print('+', end='', flush=True)
             self._model.update_data_layer(image, label)
             self._model.jacobian()
-            cost, chain_rule_factor = self._objective.cost(label)
+            cost, chain_rule_factor, index = self._objective.cost(label)
             if cost is None:
                 continue
             i += 1
             weights = self._model.weights()
             sum_delta = 0
             for w in weights:
-                derivative = w.derivative()
-                assert len(derivative) == 1, 'SGD for 1D derivatives only (ie. one dim model prediction)'
-                delta = self._learning_rate * chain_rule_factor * w.derivative()[0]
+                derivative = w.derivative()[index]
+                delta = self._learning_rate * chain_rule_factor * derivative
                 sum_delta -= delta
 
                 if i % int(iterations / 100) == 0 and i > 0:

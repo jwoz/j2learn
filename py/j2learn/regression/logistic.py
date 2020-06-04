@@ -9,12 +9,12 @@ class Logistic:
         """
         :return: value and chain rule factor
         """
-        value = self._model.value()[0]
+        value = max(self._model.value())
+        label = self._model.predict()
+        index = self._model.predict(index=True)
         if value < 0 or value > 1:
             print(f'probability out of range: {value}, {expected_label} vs {self._model.predict()}')
-            self._model.clear_cache()
-            value = self._model.value()[0]
-            return None, None
-        if self._model.predict() == [expected_label]:
-            return -math.log(value), -1.0 / value
-        return -math.log(1.0 - value), 1.0 / (1.0 - value)
+            return None, None, None
+        if label == expected_label:
+            return -math.log(value), -1.0 / value, index
+        return -math.log(1.0 - value), 1.0 / (1.0 - value), index

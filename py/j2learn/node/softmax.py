@@ -23,14 +23,14 @@ class SoftMaxNode:
             w.set_weight(ww)
 
     def node_index(self, cache=None):
-        if self in cache:
-            return cache[self]
         values = self.value(cache)
         i = int(np.argmax(np.array(values)))
         return i
 
-    def predict(self, cache=None):
+    def predict(self, index=False, cache=None):
         i = self.node_index(cache)
+        if index:
+            return i
         return [self._categories[i]]
 
     def _exponentials(self, cache=None):
