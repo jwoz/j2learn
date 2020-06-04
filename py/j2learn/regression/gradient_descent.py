@@ -49,7 +49,7 @@ class GradientDescent:
                 derivatives = w.derivative()
                 derivative = sum([crf*d for crf, d in zip(chain_rule_factors, derivatives) if not np.isnan(d*crf)])
                 delta = self._learning_rate * derivative
-                sum_delta -= delta
+                sum_delta += abs(derivative)
 
                 if i % int(iterations / 100) == 0 and i > 0:
                     snapshot.append([i, w.id, w.name, w.weight(), delta])

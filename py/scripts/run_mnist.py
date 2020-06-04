@@ -21,19 +21,16 @@ else:
     nx = ny = 28
 
 activation = reLU()
-this_model_works_with_reduced_images_and_learning_1 = Model(layers=[Image(shape=(nx, ny)), Dense(activation, (20, 1), name='d1'), SoftMax([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], name='s1')])
+# this_model_works_with_reduced_images_and_learning_1 = Model(layers=[Image(shape=(nx, ny)), Dense(activation, (20, 1), name='d1'), SoftMax([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], name='s1')])
 
 model = Model(layers=[
     Image(shape=(nx, ny)),
     Dense(activation, (20, 1), name='d1'),
     Dense(activation, (10, 1), name='d2'),
-    # Dense(activation, (10, 1), name='d2'),
     SoftMax([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], name='s1'),
 ])
 model.compile(build=True)
 
-# Gradient Descent
-gd = GradientDescent(model=model, learning_rate=0.1, labels=predict_labels)
 
 # train
 images, labels = mndata.training()
@@ -49,8 +46,9 @@ while i < len(images) and len(train_images) < train_n:
     train_labels.append(labels[i])
     i += 1
 
-iterations = 20000
-gd.sgd(train_images, train_labels, iterations=iterations)
+# Gradient Descent
+gd = GradientDescent(model=model, learning_rate=0.1, labels=predict_labels)
+gd.sgd(train_images, train_labels, iterations=20000)
 
 # test the model
 test_images, test_labels = mndata.testing()
