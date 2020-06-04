@@ -31,7 +31,7 @@ class SoftMaxNode:
         i = self.node_index(cache)
         if index:
             return i
-        return [self._categories[i]]
+        return self._categories[i]
 
     def _exponentials(self, cache=None):
         exponentials = []
@@ -64,6 +64,7 @@ class SoftMaxNode:
                     d = (x * exponentials[k] * (sum_exponentials - exponentials[k])) / (sum_exponentials ** 2) if k == kp else -values[k] * values[kp] * x
                     derivatives.append(d)
                 jacobian.append(derivatives)
+        self.set_weight_derivatives(jacobian)
         return jacobian
 
     def chain_rule_factors(self, cache=None):

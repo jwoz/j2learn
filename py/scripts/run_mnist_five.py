@@ -12,19 +12,19 @@ from j2learn.model.model import Model
 from j2learn.regression.gradient_descent import GradientDescent
 
 mndata = MNISTData(path='../test/mnist')
-predict_labels = [1, 5]
+predict_labels =[0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 activation = reLU()
 model = Model(layers=[
     Image(shape=(14, 14)),
-    Dense(activation, (300, 1), name='d1'),
-    Dense(activation, (100, 1), name='d2'),
+    Dense(activation, (10, 1), name='d1'),
+    # Dense(activation, (10, 1), name='d2'),
     SoftMax([0, 1, 2, 3, 4, 5, 6, 7, 8, 9], name='s1'),
 ])
 model.compile(build=True)
 
 # Gradient Descent
-gd = GradientDescent(model=model, learning_rate=0.01, labels=predict_labels)
+gd = GradientDescent(model=model, learning_rate=1.0, labels=predict_labels)
 
 # train
 images, labels = mndata.training()
