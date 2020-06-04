@@ -9,6 +9,10 @@ class Weight:
     def __str__(self):
         return self.name
 
+    def reset(self):
+        self._derivatives = []
+        self._derivative_name = None
+
     def weight(self):
         return self._weight
 

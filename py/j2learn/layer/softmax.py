@@ -6,8 +6,6 @@ from j2learn.node.weight import Weight
 
 
 class SoftMax(LayerBase):
-    multi = True
-
     def __init__(self, categories: list, underlying_layer: (list, None) = None, build: bool = True, weight: (float, None) = None, name: str = ''):
         self._categories = categories
         super().__init__((len(categories), 1), underlying_layer, build, weight, f'softmax[{name}]')
@@ -49,4 +47,3 @@ class SoftMax(LayerBase):
 
     def set_weight_derivatives(self, derivatives):
         self._nodes[0].set_weight_derivatives(derivatives)
-

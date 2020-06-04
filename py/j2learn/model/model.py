@@ -67,6 +67,7 @@ class Model:
     def set_weight(self, weight, value):
         self._node_value_cache = {}
         weight.set_weight(value)
+        weight.reset()
 
     def jacobian(self):
         factors = []

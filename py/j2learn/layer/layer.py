@@ -14,8 +14,8 @@ class LayerBase:
         self._name = name
         if build and underlying_layer is not None:
             self.build(init=weight)
-        self._chain_rule_factors = []
-        self._derivatives = []
+        # self._chain_rule_factors = []
+        # self._derivatives = []
 
     def __str__(self):
         return self._name
@@ -94,7 +94,7 @@ class LayerBase:
                         r.append(dd * ff)
                     m.append(r)
             derivatives = m
-        self._derivatives = derivatives
+        # self._derivatives = derivatives
         self.set_weight_derivatives(derivatives)
         return derivatives
 
@@ -104,7 +104,7 @@ class LayerBase:
         factors = self.node_chain_rule_factors(cache)
         if upper_layer_factors is not None and len(upper_layer_factors):
             factors = matrix_product(upper_layer_factors, factors)
-        self._chain_rule_factors = factors
+        # self._chain_rule_factors = factors
         return factors
 
     def display(self, numbers=False, threshold=0.8):

@@ -50,9 +50,9 @@ class GradientDescent:
                 delta = self._learning_rate * chain_rule_factor * derivative
                 sum_delta -= delta
 
-                if i % int(iterations / 100) == 0 and i > 0:
-                    snapshot.append([i, w.id, w.name, w.weight(), delta])
+                # if i % int(iterations / 100) == 0 and i > 0:
+                #     snapshot.append([i, w.id, w.name, w.weight(), delta])
                 self._model.set_weight(w, w.weight() - delta)
 
-            if i % int(iterations / 100) == 0 and i > 0:
-                pd.DataFrame(data=snapshot, columns=['iteration', 'id', 'name', 'weight', 'delta']).to_csv('five_snapshot.csv')
+            # if i % int(iterations / 100) == 0 and i > 0:
+            #     pd.DataFrame(data=snapshot, columns=['iteration', 'id', 'name', 'weight', 'delta']).to_csv('five_snapshot.csv')

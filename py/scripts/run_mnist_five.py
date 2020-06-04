@@ -39,7 +39,7 @@ while i < len(images) and len(reduced_images) < 5000:
     reduced_labels.append(labels[i])
     i += 1
 
-iterations = 50000
+iterations = 10000
 gd.sgd(reduced_images, reduced_labels, iterations=iterations)
 
 # test the model
